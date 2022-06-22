@@ -42,7 +42,7 @@ namespace ClientAndServer
 
                 p2.Start();
 
-                p2.SendMsg("Hello Client");
+                p2.SendMsg("Hello Client !");
                 string msg = "";
                 string s = "";
                 do
