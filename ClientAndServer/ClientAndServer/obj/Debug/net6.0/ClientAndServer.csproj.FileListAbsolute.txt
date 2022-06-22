@@ -1,0 +1,15 @@
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/bin/Debug/net6.0/ClientAndServer
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/bin/Debug/net6.0/ClientAndServer.deps.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/bin/Debug/net6.0/ClientAndServer.runtimeconfig.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/bin/Debug/net6.0/ClientAndServer.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/bin/Debug/net6.0/ClientAndServer.pdb
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.csproj.AssemblyReference.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.GeneratedMSBuildEditorConfig.editorconfig
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.AssemblyInfoInputs.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.AssemblyInfo.cs
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.csproj.CoreCompileInputs.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/refint/ClientAndServer.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.pdb
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ClientAndServer.genruntimeconfig.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ClientAndServer/ClientAndServer/obj/Debug/net6.0/ref/ClientAndServer.dll

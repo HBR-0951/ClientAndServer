@@ -1,4 +1,28 @@
 ﻿<Properties StartupConfiguration="{ECC03827-D239-4551-B459-E521B544AE03}|Default">
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.ItemProperties.ClientAndServer FirstBuild="True" />
+  <MonoDevelop.Ide.ItemProperties.ClientAndServer PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ClientAndServer/MainClass.cs">
+    <Files>
+      <File FileName="ClientAndServer/Program.cs" Line="12" Column="1" />
+      <File FileName="ClientAndServer/Program.cs" Line="7" Column="2" />
+      <File FileName="ClientAndServer/Program.cs" Line="36" Column="61" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="ClientAndServer" expanded="True">
+            <Node name="ClientAndServer" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
