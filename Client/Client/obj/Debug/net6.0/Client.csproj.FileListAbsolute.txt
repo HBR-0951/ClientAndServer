@@ -1,0 +1,15 @@
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Client
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Client.deps.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Client.runtimeconfig.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Client.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Client.pdb
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.csproj.AssemblyReference.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.GeneratedMSBuildEditorConfig.editorconfig
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.AssemblyInfoInputs.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.AssemblyInfo.cs
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.csproj.CoreCompileInputs.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/refint/Client.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.pdb
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.genruntimeconfig.cache
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/ref/Client.dll
