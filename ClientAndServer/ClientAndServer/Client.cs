@@ -8,11 +8,18 @@ namespace ClientAndServer
     public class Client
     {
         public Socket clientSocket;
-        public Client()
+        public string ipAddress;
+        public int port;
+        public string name;
+
+        public Client(string ipAddress, int port)
         {
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this.ipAddress = ipAddress;
+            this.port = port;
+
         }
-        public void Connect(string ipAddress, int port)
+        public void Connect()
         {
             
             IPAddress ipaddress = IPAddress.Parse(ipAddress);
@@ -44,6 +51,31 @@ namespace ClientAndServer
         public void Close()
         {
             clientSocket.Close();
+        }
+        public void run()
+        {
+            //Client client = new Client();
+            Connect();
+
+            string s = "";
+            string msg = "";
+            do
+            {
+                // Get msg
+                msg = GetMsg();
+                if (msg != "")
+                {
+                    Console.WriteLine("Client " + this.name + " get from Server: " + msg);
+                    msg = "";
+                }
+                // Receive msg
+                Console.Write("Client " + this.name + " write to Server: ");
+                s = Console.ReadLine();
+                SendMsg(s);
+
+                Thread.Sleep(10);
+
+            } while (true);
         }
 
     }
