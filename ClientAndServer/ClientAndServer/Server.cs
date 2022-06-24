@@ -17,8 +17,13 @@ namespace ClientAndServer
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.ipAddress = ipAddress;
             this.port = port;
-
         }
+
+        public void Start() { }
+        public void Close(int i) { }
+        public void SendTo(int target) { }
+        public void Broadcast() { }
+
 
         public void Bind()
         {
@@ -29,19 +34,20 @@ namespace ClientAndServer
             {
                 serverSocket.Bind(ipendpoint);//繫結完成
                 Console.WriteLine("Bind successfully");
+                serverSocket.Listen(5);//處理連結佇列個數 為0則為不限制
             }
-            catch (Exception e)
+            catch (SocketException ex)
             {
                 Console.WriteLine("Bind faild");
-                Console.WriteLine("Warning with " + e.ToString());
+                Console.WriteLine("Warning with " + ex.ToString());
             }
         }
 
-        public void Start()
+        public void Accept()
         {
             try
             {
-                serverSocket.Listen(5);//處理連結佇列個數 為0則為不限制
+                
                 clientSocket = serverSocket.Accept();//接收一個客戶端連結
                 Console.WriteLine("Client: " + clientSocket.RemoteEndPoint + " have connected.");
             }
@@ -51,6 +57,7 @@ namespace ClientAndServer
             }
             
         }
+
         public string GetMsg()
         {
             byte[] dateBuffer = new byte[1024];
@@ -82,23 +89,24 @@ namespace ClientAndServer
 
             string msg = "";
             string s = "";
-            Start();
-
             do
             {
                 
-                SendMsg("Hello Client !");
+                Accept();
+
+                //SendMsg("Hello Client !");
+                Console.WriteLine("Server");
                 msg = GetMsg();
                 if (msg != "")
                 {
-                    Console.WriteLine("Server "+ this.name + " get from Client: " + msg);
+                    Console.WriteLine("Server " + this.name + " get from Client: " + msg);
                     msg = "";
                 }
 
-                Console.Write("Server " + this.name + " write to Client: ");
-                s = Console.ReadLine();
-                SendMsg(s);
-                Thread.Sleep(10);
+                //Console.Write("Server " + this.name + " write to Client: ");
+                //s = Console.ReadLine();
+                //SendMsg(s);
+                //s = "";
             } while (true);
         }
     }

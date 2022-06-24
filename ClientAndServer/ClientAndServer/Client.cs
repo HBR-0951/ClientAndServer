@@ -61,19 +61,19 @@ namespace ClientAndServer
             string msg = "";
             do
             {
-                // Get msg
-                msg = GetMsg();
-                if (msg != "")
-                {
-                    Console.WriteLine("Client " + this.name + " get from Server: " + msg);
-                    msg = "";
-                }
+                //// Get msg
+                //msg = GetMsg();
+                //if (msg != "")
+                //{
+                //    Console.WriteLine("Client " + this.name + " get from Server: " + msg);
+                //    msg = "";
+                //}
                 // Receive msg
+                Console.WriteLine("Client");
                 Console.Write("Client " + this.name + " write to Server: ");
                 s = Console.ReadLine();
                 SendMsg(s);
-
-                Thread.Sleep(10);
+                s = "";
 
             } while (true);
         }

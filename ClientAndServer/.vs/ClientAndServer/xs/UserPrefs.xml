@@ -1,17 +1,26 @@
 ﻿<Properties StartupConfiguration="{ECC03827-D239-4551-B459-E521B544AE03}|Default">
-  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.ClientAndServer PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ClientAndServer/MainClass.cs">
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ClientAndServer/User.cs">
     <Files>
-      <File FileName="ClientAndServer/Program.cs" Line="12" Column="1" />
-      <File FileName="ClientAndServer/Program.cs" Line="7" Column="2" />
-      <File FileName="ClientAndServer/Program.cs" Line="36" Column="61" />
+      <File FileName="ClientAndServer/MainClass.cs" Line="18" Column="39" />
+      <File FileName="ClientAndServer/Server.cs" Line="37" Column="40" />
+      <File FileName="ClientAndServer/Client.cs" Line="19" Column="30" />
+      <File FileName="ClientAndServer/User.cs" Line="9" Column="30" />
+      <File FileName="ClientAndServer/Server1.cs" Line="28" Column="27" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="ClientAndServer" expanded="True">
-            <Node name="ClientAndServer" expanded="True" />
+            <Node name="ClientAndServer" expanded="True">
+              <Node name="User.cs" selected="True" />
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -20,9 +29,4 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
