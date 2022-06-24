@@ -38,7 +38,7 @@ namespace Server {
 
 		// 當新連線連接時
 		protected virtual void OnNewConnection() {
-
+			
 			// 服務器還處於接受連線狀態時，無限迴圈 -> 執行等待客戶
 			while(m_tcpSocket.Connected) {
 

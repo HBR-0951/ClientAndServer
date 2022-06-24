@@ -8,8 +8,8 @@ namespace ClientAndServer
     {
         public Socket serverSocket;
         public Socket clientSocket;
-        public string ipAddress;
-        public int port;
+        public string ipAddress = "127.0.0.1";
+        public int port = 8000;
         public string name;
 
         public Server(string ipAddress, int port)

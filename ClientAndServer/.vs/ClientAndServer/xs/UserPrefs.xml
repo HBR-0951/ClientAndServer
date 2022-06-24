@@ -9,9 +9,9 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="ClientAndServer/User.cs">
     <Files>
       <File FileName="ClientAndServer/MainClass.cs" Line="18" Column="39" />
-      <File FileName="ClientAndServer/Server.cs" Line="37" Column="40" />
+      <File FileName="ClientAndServer/Server.cs" Line="68" Column="91" />
       <File FileName="ClientAndServer/Client.cs" Line="19" Column="30" />
-      <File FileName="ClientAndServer/User.cs" Line="9" Column="30" />
+      <File FileName="ClientAndServer/User.cs" Line="14" Column="4" />
       <File FileName="ClientAndServer/Server1.cs" Line="28" Column="27" />
     </Files>
     <Pads>

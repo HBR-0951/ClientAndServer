@@ -1,17 +1,23 @@
 ﻿<Properties StartupConfiguration="{84307059-C780-4FF1-99C5-2DCB130FBEA8}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.ItemProperties.Server PreferredExecutionTarget="MonoDevelop.Default" />
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Server/Program.cs">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Server/TcpServer_Template.cs">
     <Files>
-      <File FileName="Server/Program.cs" Line="7" Column="18" />
+      <File FileName="Server/Program.cs" Line="58" Column="2" />
+      <File FileName="Server/TcpServer_Template.cs" Line="16" Column="36" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Server" expanded="True">
-            <Node name="Server" expanded="True" />
+            <Node name="Server" expanded="True">
+              <Node name="TcpServer_Template.cs" selected="True" />
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -20,7 +26,4 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.Server PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
