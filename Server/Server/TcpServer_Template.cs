@@ -91,6 +91,7 @@ namespace Server {
 			m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
 
 			_awaitClient.Start(); // 啟動等待客戶端連線執行緒
+			Console.Write("1");
         }
 
 		// 關閉服務器

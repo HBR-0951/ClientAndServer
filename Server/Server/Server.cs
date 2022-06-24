@@ -75,6 +75,14 @@ namespace Server
 
         }
 
+        //public void SendTo(User user, string msg)
+        //{
+        //    byte[] bytesPacket;
+        //    bytesPacket = Encoding.UTF8.GetBytes(msg);
+
+        //    user.SendTo(user, bytesPacket);
+        //}
+
         // 廣播
         public void OnBroadcast(string msg)
         {
