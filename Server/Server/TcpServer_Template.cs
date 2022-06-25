@@ -38,9 +38,8 @@ namespace Server {
 
 		// 當新連線連接時
 		protected virtual void OnNewConnection() {
-			
 			// 服務器還處於接受連線狀態時，無限迴圈 -> 執行等待客戶
-			while(m_tcpSocket.Connected) {
+			while (m_tcpSocket.Connected) {
 
 				var userSocket = m_tcpSocket.Accept(); //程式會卡在此處等待客戶端的連線
 
@@ -83,16 +82,18 @@ namespace Server {
 
 			var IPEndPoint = new IPEndPoint(IPAddress.Parse(m_host), m_port);
 			m_tcpSocket.Bind(IPEndPoint); // 綁定監聽目標
-        }
+			
+		}
 		
 
 		// 啟動服務器(啟動監聽)
 		public virtual void OnStart() {
 			m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
-
+			
 			_awaitClient.Start(); // 啟動等待客戶端連線執行緒
-			Console.Write("1");
-        }
+			
+
+		}
 
 		// 關閉服務器
 		public virtual void OnClose() {
