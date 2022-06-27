@@ -115,22 +115,7 @@ namespace Server
             _awaitClient.Start(); // 啟動等待客戶端連線執行緒
 
         }
-        //// 監聽目標地址(並未開始監聽，僅作為設定)
-        //public void ListenTo(string ipAddress, int port)
-        //{
-        //    m_host = ipAddress;
-        //    m_port = port;
 
-        //    var IPEndPoint = new IPEndPoint(IPAddress.Parse(m_host), m_port);
-        //    m_tcpSocket.Bind(IPEndPoint); // 綁定監聽目標
-
-        //}
-
-        //// 關閉服務器
-        //public void OnClose()
-        //{
-        //    m_tcpSocket.Close();
-        //}
         public void SendTo(User user, string msg)
         {
             byte[] bytesPacket;
@@ -154,8 +139,11 @@ namespace Server
             
             foreach (var user in m_userList)
             {
-               
-                user.SendTo(user, bytesPacket);
+                if (user.IsConnected)
+                {
+                    user.SendTo(user, bytesPacket);
+                }
+                
             }
         }
 

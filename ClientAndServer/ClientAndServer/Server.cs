@@ -135,14 +135,14 @@ namespace ClientAndServer
         {
             byte[] bytesPacket;
             bytesPacket = Encoding.UTF8.GetBytes(msg);
-            Console.WriteLine("Send to User: " + msg);
+            Console.WriteLine("Server send to User: " + msg);
             user.SendTo(user, bytesPacket);
         }
         public void SendTo(Socket userSocket, string msg)
         {
             byte[] bytesPacket;
             bytesPacket = Encoding.UTF8.GetBytes(msg);
-            Console.WriteLine("Send to Client: " + msg);
+            Console.WriteLine("Server send to Client: " + msg);
             userSocket.Send(bytesPacket);
         }
 

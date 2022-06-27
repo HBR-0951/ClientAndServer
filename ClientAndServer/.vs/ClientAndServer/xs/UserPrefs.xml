@@ -1,24 +1,25 @@
 ﻿<Properties StartupConfiguration="{ECC03827-D239-4551-B459-E521B544AE03}|Default">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.ClientAndServer PreferredExecutionTarget="MonoDevelop.Default" />
+  <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ClientAndServer/Client.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ClientAndServer/Server.cs">
     <Files>
-      <File FileName="ClientAndServer/MainClass.cs" Line="18" Column="39" />
-      <File FileName="ClientAndServer/Server.cs" Line="51" Column="29" />
-      <File FileName="ClientAndServer/Client.cs" Line="49" Column="58" />
-      <File FileName="ClientAndServer/User.cs" Line="32" Column="10" />
-      <File FileName="ClientAndServer/Server1.cs" Line="28" Column="27" />
+      <File FileName="ClientAndServer/MainClass.cs" Line="18" Column="31" />
+      <File FileName="ClientAndServer/User.cs" Line="5" Column="26" />
+      <File FileName="ClientAndServer/TcpServer_Template.cs" Line="6" Column="1" />
+      <File FileName="ClientAndServer/Server.cs" Line="138" Column="39" />
+      <File FileName="ClientAndServer/Client.cs" Line="77" Column="7" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="ClientAndServer" expanded="True">
-            <Node name="ClientAndServer" expanded="True" />
+            <Node name="ClientAndServer" expanded="True">
+              <Node name="Server.cs" selected="True" />
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -27,4 +28,5 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.ClientAndServer PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
