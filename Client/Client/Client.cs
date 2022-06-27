@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 
-namespace ClientAndServer
+namespace Client
 {
 	public class Client
 	{
@@ -37,6 +37,16 @@ namespace ClientAndServer
         }
 
 
+		protected void OnNewConnection()
+        {
+			//while (m_tcpSocket.Connected)
+			//{
+			//	OnPacketReceived();
+			//	Console.WriteLine("1");
+   //             string s = Console.ReadLine();
+   //             Send(s);
+   //         }
+		}
 
 		protected void OnPacketReceived()
         {
