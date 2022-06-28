@@ -34,7 +34,8 @@ namespace Server {
                         // 創建一個user 給連接到的userSocket
                         var uid = UID_Generator;
                         var user = new User(userSocket, uid.ToString());
-                        user.Send($"[ Time ] Connect to [ Target : IP ] Successful : [ User_id: {uid} ]");
+                        DateTime localtime = DateTime.Now;
+                        user.Send($"[ Time: {localtime} ]  Connect to [ Target IP:{userSocket.RemoteEndPoint} ] Successful : [ User_id: {uid} ]");
 
                         //為 user 開啟 一個執行緒，持續等待該用戶的資料
                         _packetReceived.Start(userSocket); // 傳入用戶的 user 作為參數
@@ -56,17 +57,6 @@ namespace Server {
             _awaitClient.Start(); // 啟動等待客戶端連線執行緒
 
         }
-
-        //    var IPEndPoint = new IPEndPoint(IPAddress.Parse(m_host), m_port);
-        //    m_tcpSocket.Bind(IPEndPoint); // 綁定監聽目標
-
-        //}
-
-        //// 關閉服務器
-        //public void OnClose()
-        //{
-        //    m_tcpSocket.Close();
-        //}
 
         // 廣播
         public void OnBroadcast(string msg) {

@@ -35,7 +35,9 @@ namespace Server {
 					byte[] date = new byte[m_tcpSocket.Available];
 					int count = m_tcpSocket.Receive(date);
 					var msg = System.Text.Encoding.UTF8.GetString(date, 0, count);
-					Console.WriteLine("Server Data Received [Type:Msg]: " + msg);
+					Console.WriteLine($"Server Data Received from [ User_ID : {m_sessionId} ]: " + msg);
+
+					Send(msg.ToUpper());
 
 				} else {
 					Thread.Sleep(100);
@@ -50,7 +52,7 @@ namespace Server {
 
 			byte[] bytesPacket;
 			bytesPacket = System.Text.Encoding.UTF8.GetBytes(msg);
-			Console.WriteLine($"Send to [ {m_sessionId} ] : " + msg);
+			Console.WriteLine($"Send to [ User_ID : {m_sessionId} ] : " + msg);
 			m_tcpSocket.Send(bytesPacket);
 		}
 
