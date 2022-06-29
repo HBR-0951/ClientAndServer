@@ -16,6 +16,9 @@ namespace Server {
 		protected DateTime local1;
 		protected DateTime local2;
 		protected TimeSpan interval;
+
+		public bool hasMsg = false;
+		public string receiveMsg;
         
 
 		public bool IsConnected {
@@ -54,14 +57,14 @@ namespace Server {
                     }    
 					else{
 						Console.WriteLine($"Server Data Received from [ User_ID : {m_sessionId} ]: " + msg);
-						Send(msg.ToUpper());
+						receiveMsg = msg;
+						hasMsg = true;
                     }
                 }
                 else
                 {
 					local2 = DateTime.Now;
 					interval = local2 - local1;
-					//Console.WriteLine(interval.Seconds);
 					if(interval.Seconds > 10)
                     {
 						isOffLine = true;

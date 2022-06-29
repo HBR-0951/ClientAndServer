@@ -12,10 +12,14 @@ namespace Server {
         protected new List<User> m_userList = new(10);
 
         protected Thread _checkUserisOffLine;
+        protected Thread _processingMsg;
+        
+
         protected bool isCloseServer = false;
 
         public Server(string name) : base(name) {
             _checkUserisOffLine = new Thread(checkUserOffLine);
+            _processingMsg = new Thread(ProcessMessage);
             OnInitialize();
         }
 
@@ -57,7 +61,8 @@ namespace Server {
             m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
 
             _awaitClient.Start(); // 啟動等待客戶端連線執行緒
-            _checkUserisOffLine.Start();
+            _checkUserisOffLine.Start(); // 檢查client 有無斷線
+            _processingMsg.Start(); // 處理經過的 Message
             
 
         }
@@ -68,8 +73,6 @@ namespace Server {
         }
         public override void OnClosed()
         {
-            _awaitClient.Interrupt(); // Thread.Abort()過時
-            _checkUserisOffLine.Interrupt();
             m_tcpSocket.Close();
             Console.WriteLine("Server has closed");
         }
@@ -120,11 +123,49 @@ namespace Server {
                 }
                 Thread.Sleep(100);
             }
+        }
 
-
-
-
-
+        protected void ProcessMessage()
+        {
+            while (!isCloseServer)
+            {
+                if(m_userList != null)
+                {
+                    string msg;
+                    User sendUser;
+                    foreach (var user in m_userList)
+                    {
+                        if (user.hasMsg)
+                        {
+                            msg = user.receiveMsg;
+                            sendUser = user;
+                            bool isSend = false;
+                            foreach (var receiver in m_userList)
+                            {
+                                if(receiver != sendUser)
+                                {
+                                    receiver.Send(msg);
+                                    isSend = true;
+                                }
+                            }
+                            if (!isSend)
+                            {
+                                Console.WriteLine("Can't find Client to receive message.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Send Successfully");
+                            }
+                            isSend = true;
+                            user.hasMsg = false;
+                            break;
+                         
+                        }
+                    }
+                    
+                }
+                Thread.Sleep(100);
+            }
         }
     }
 }

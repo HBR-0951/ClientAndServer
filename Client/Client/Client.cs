@@ -118,7 +118,7 @@ namespace Client
 
 		public void OnClosed()
         {
-			_awaitServer.Interrupt();
+			_awaitServer.Interrupt(); // Thread.Abort()過時
 			_sendPacket.Interrupt();
 			m_tcpSocket.Close();
 			Console.WriteLine("Client has closed.");
