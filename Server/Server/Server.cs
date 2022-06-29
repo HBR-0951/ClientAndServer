@@ -67,7 +67,9 @@ namespace Server {
             OnClosed();
         }
         public override void OnClosed()
-        {      
+        {
+            _awaitClient.Interrupt(); // Thread.Abort()過時
+            _checkUserisOffLine.Interrupt();
             m_tcpSocket.Close();
             Console.WriteLine("Server has closed");
         }

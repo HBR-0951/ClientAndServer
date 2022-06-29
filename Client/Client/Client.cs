@@ -77,6 +77,10 @@ namespace Client
 					Thread.Sleep(100);
 				}
 			}
+			Console.WriteLine("unconnected");
+			OnClosed();
+
+			
 				
 			
 
@@ -88,9 +92,17 @@ namespace Client
         {
             while (m_tcpSocket.Connected)
             {
-				string s = Console.ReadLine();
-				local1 = DateTime.Now;
-				Send(s);
+                try
+                {
+					string s = Console.ReadLine();
+					local1 = DateTime.Now;
+					Send(s);
+				}
+				catch(Exception ex)
+                {
+					Console.WriteLine(ex.Message);
+                }
+				
             }
         }
 		
@@ -103,6 +115,15 @@ namespace Client
             
 			
 		}
+
+		public void OnClosed()
+        {
+			_awaitServer.Interrupt();
+			_sendPacket.Interrupt();
+			m_tcpSocket.Close();
+			Console.WriteLine("Client has closed.");
+        }
+
 		public void OnStart()
         {
 			try
