@@ -11,8 +11,11 @@ namespace Server {
 
         protected new List<User> m_userList = new(10);
 
+        protected Thread _checkUserisOffLine;
+        protected bool isCloseServer = false;
 
         public Server(string name) : base(name) {
+            _checkUserisOffLine = new Thread(checkUserOffLine);
             OnInitialize();
         }
 
@@ -24,8 +27,9 @@ namespace Server {
 
             Console.WriteLine("Waiting for Connecting.");
             // 服務器還處於接受連線狀態時，無限迴圈 -> 執行等待客戶
-            while (true) {
+            while (!isCloseServer) {
                 try {
+                    
                     var userSocket = m_tcpSocket.Accept(); //程式會卡在此處等待客戶端的連線
 
                     if (userSocket.Connected) {
@@ -37,11 +41,9 @@ namespace Server {
                         DateTime localtime = DateTime.Now;
                         user.Send($"[ Time: {localtime} ]  Connect to [ Target IP:{userSocket.RemoteEndPoint} ] Successful : [ User_id: {uid} ]");
 
-                        //為 user 開啟 一個執行緒，持續等待該用戶的資料
-                        _packetReceived.Start(userSocket); // 傳入用戶的 user 作為參數
-
 
                         m_userList.Add(user); //保存用戶
+                        
                     }
 
                 } catch (Exception ex) {
@@ -55,23 +57,73 @@ namespace Server {
             m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
 
             _awaitClient.Start(); // 啟動等待客戶端連線執行緒
+            _checkUserisOffLine.Start();
+            
+
+        }
+        public void OnClose()
+        {
+            OnClosing();
+            OnClosed();
+        }
+        public override void OnClosed()
+        {      
+            m_tcpSocket.Close();
+            Console.WriteLine("Server has closed");
+        }
+
+        public void OnClosing()
+        {
+            isCloseServer = true;
+            if(m_userList != null)
+            {
+                
+                foreach (var user in m_userList)
+                {
+                    user.isOffLine = true;
+                }
+            }
+            
+            Thread.Sleep(100);
 
         }
 
         // 廣播
         public void OnBroadcast(string msg) {
-            Encoding.UTF8.GetBytes(msg);
+            
+            Console.WriteLine("BroadCast: " + msg);
 
             foreach (var user in m_userList) {
+                Console.WriteLine("1");
                 user.Send(msg);
             }
         }
 
+        protected void checkUserOffLine()
+        {
+            
+            while (!isCloseServer)
+            {
+                if (m_userList != null)
+                {
+                    foreach (var user in m_userList)
+                    {
+                        if (user.isOffLine)
+                        {
+                            Console.WriteLine("Remove Client in UserList");
+                            m_userList.Remove(user);
+                            break;
+                        }
+                    }
+                }
+                Thread.Sleep(100);
+            }
 
 
 
 
 
+        }
     }
 }
 

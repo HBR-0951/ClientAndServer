@@ -71,9 +71,10 @@ namespace Server {
 		}
 
 		// 關閉服務器
-		public virtual void OnClose() {
+		public virtual void OnClosed()
+		{
 			m_tcpSocket.Close();
-        }
+		}
 
 		// 廣播
 		public virtual void OnBroadcast() {
