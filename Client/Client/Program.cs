@@ -6,10 +6,11 @@ namespace Client
     {
         static void Main()
         {
-            Client client = new Client("client1");
-            client.BuildEndPoint("127.0.0.1", 8000);
+            Client client1 = new Client("client1");
+            client1.OnBuildEndPoint("127.0.0.1", 8000);
 
-            client.OnStart();
+            client1.OnStart();
+            
         }
     }
 }

@@ -17,34 +17,44 @@ namespace ClientAndServer
 		//protected Thread? _packageReceived;
 		protected Thread? _sendPacket;
 
-		
+
 
 		public string Name { get; set; } = "N/A";
 
 		public bool ISConnected
-        {
+		{
 			get => m_tcpSocket != null && m_tcpSocket.Connected;
-        }
+		}
 
 		public Client(string name)
-        {
+		{
 			Name = name;
 			_awaitServer = new Thread(OnPacketReceived);
 			//_packageReceived = new Thread(OnPacketReceived);
-			
+
 			m_tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        }
+		}
 
 
+		protected void OnNewConnection()
+		{
+			//while (m_tcpSocket.Connected)
+			//{
+			//	OnPacketReceived();
+			//	Console.WriteLine("1");
+			//             string s = Console.ReadLine();
+			//             Send(s);
+			//         }
+		}
 
 		protected void OnPacketReceived()
-        {
+		{
 			while (true)
 			{
 				try
 				{
-					
+
 					int set = 0;
 					while (m_tcpSocket.Connected)
 					{
@@ -66,15 +76,16 @@ namespace ClientAndServer
 						{
 							Thread.Sleep(100);
 						}
-                        if (set == 1)
-                        {
+						if (set == 1)
+						{
+							Console.Write("Client writes msg: ");
 							string s = Console.ReadLine();
 							Send(s);
 							set = 0;
-                        }
+						}
 
-						
-						
+
+
 
 
 					}
@@ -88,18 +99,18 @@ namespace ClientAndServer
 
 
 		}
-		
+
 		public void BuildEndPoint(string ipAddress, int port)
-        {
+		{
 			m_host = ipAddress;
 			m_port = port;
 
 			IPEndPoint = new IPEndPoint(IPAddress.Parse(m_host), m_port);
-            
-			
+
+
 		}
 		public void OnStart()
-        {
+		{
 			try
 			{
 				m_tcpSocket.Connect(IPEndPoint);
@@ -110,12 +121,12 @@ namespace ClientAndServer
 			{
 				Console.WriteLine("Warning :" + e);
 			}
-			
-        }
+
+		}
 
 		public void Send(string msg)
-        {
-			
+		{
+
 			m_tcpSocket.Send(Encoding.UTF8.GetBytes(msg));
 			Console.WriteLine("Client send msg: " + msg);
 		}

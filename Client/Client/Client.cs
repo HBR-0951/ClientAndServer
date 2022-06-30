@@ -13,9 +13,17 @@ namespace Client
 		protected int m_port = 8888;
 		protected IPEndPoint? IPEndPoint;
 
-		protected Thread? _awaitServer;
-		//protected Thread? _packageReceived;
+		protected Thread? _awaitServer;	
 		protected Thread? _sendPacket;
+
+		public bool isOffLine = false;
+
+		// Timer
+		protected DateTime local1;
+		protected DateTime local2;
+		protected TimeSpan interval;
+
+		
 
 		
 
@@ -30,76 +38,75 @@ namespace Client
         {
 			Name = name;
 			_awaitServer = new Thread(OnPacketReceived);
-			//_packageReceived = new Thread(OnPacketReceived);
+			_sendPacket = new Thread(OnSendPacket);
 			
 			m_tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         }
 
-
-		protected void OnNewConnection()
-        {
-			//while (m_tcpSocket.Connected)
-			//{
-			//	OnPacketReceived();
-			//	Console.WriteLine("1");
-   //             string s = Console.ReadLine();
-   //             Send(s);
-   //         }
-		}
-
 		protected void OnPacketReceived()
         {
-			while (true)
-			{
-				try
-				{
+			
 					
-					int set = 0;
-					while (m_tcpSocket.Connected)
-					{
+			while (m_tcpSocket.Connected)
+			{
 
-						if (m_tcpSocket.Available != 0)
-						{
-
-							// 讀取資料
-							// Socket.Receive();
-							byte[] date = new byte[m_tcpSocket.Available];
-							int count = m_tcpSocket.Receive(date);
-							string msg = Encoding.UTF8.GetString(date, 0, count);
-							Console.WriteLine("Client get msg: " + msg);
-							set = 1;
-
-
-						}
-						else
-						{
-							Thread.Sleep(100);
-						}
-                        if (set == 1)
-                        {
-							string s = Console.ReadLine();
-							Send(s);
-							set = 0;
-                        }
-
-						
-						
-
-
-					}
-				}
-				catch (Exception ex)
+				if (m_tcpSocket.Available != 0)
 				{
-					Console.WriteLine(ex.Message);
+					local1 = DateTime.Now;
+					// 讀取資料
+					// Socket.Receive();
+					byte[] date = new byte[m_tcpSocket.Available];
+					int count = m_tcpSocket.Receive(date);
+					string msg = Encoding.UTF8.GetString(date, 0, count);
+					Console.WriteLine("Client get msg: " + msg);
+							
+
+
+				}
+				else
+				{
+					local2 = DateTime.Now;
+					interval = local2 - local1;
+					if(interval.Seconds > 5)
+                    {
+						string s = "$";
+						Send(s);
+						local1 = DateTime.Now;
+                    }
+					Thread.Sleep(100);
 				}
 			}
+			Console.WriteLine("unconnected");
+			OnClosed();
+
+			
+				
+			
 
 
 
 		}
+
+		protected void OnSendPacket()
+        {
+            while (m_tcpSocket.Connected)
+            {
+                try
+                {
+					string s = Console.ReadLine();
+					local1 = DateTime.Now;
+					Send(s);
+				}
+				catch(Exception ex)
+                {
+					Console.WriteLine(ex.Message);
+                }
+				
+            }
+        }
 		
-		public void BuildEndPoint(string ipAddress, int port)
+		public void OnBuildEndPoint(string ipAddress, int port)
         {
 			m_host = ipAddress;
 			m_port = port;
@@ -108,6 +115,15 @@ namespace Client
             
 			
 		}
+
+		public void OnClosed()
+        {
+			_awaitServer.Interrupt(); // Thread.Abort()過時
+			_sendPacket.Interrupt();
+			m_tcpSocket.Close();
+			Console.WriteLine("Client has closed.");
+        }
+
 		public void OnStart()
         {
 			try
@@ -115,6 +131,8 @@ namespace Client
 				m_tcpSocket.Connect(IPEndPoint);
 				Console.WriteLine("Connect");
 				_awaitServer.Start();
+				_sendPacket.Start();
+				local1 = DateTime.Now;
 			}
 			catch (SocketException e)
 			{
