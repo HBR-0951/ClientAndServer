@@ -13,3 +13,9 @@
 /Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.pdb
 /Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.genruntimeconfig.cache
 /Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/ref/Client.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Packet.deps.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Packet.runtimeconfig.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Packet
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Packet.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/bin/Debug/net6.0/Packet.pdb
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Client/Client/obj/Debug/net6.0/Client.csproj.CopyComplete

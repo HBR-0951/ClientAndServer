@@ -28,3 +28,9 @@
 /Users/waylon/Workspace/Fork/cs-architecture/Server/Server/obj/Debug/net6.0/Server.pdb
 /Users/waylon/Workspace/Fork/cs-architecture/Server/Server/obj/Debug/net6.0/Server.genruntimeconfig.cache
 /Users/waylon/Workspace/Fork/cs-architecture/Server/Server/obj/Debug/net6.0/ref/Server.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/Packet.deps.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/Packet.runtimeconfig.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/Packet
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/Packet.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/Packet.pdb
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/obj/Debug/net6.0/Server.csproj.CopyComplete

@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {}
+    "net6.0": {
+      "Packet/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/Packet.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Packet.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Packet/1.0.0": {
+      "type": "project",
+      "path": "../../ProtocBuff/Packet/Packet.csproj",
+      "msbuildProject": "../../ProtocBuff/Packet/Packet.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net6.0": []
+    "net6.0": [
+      "Packet >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "/Users/huangbairu/.nuget/packages/": {}
@@ -32,7 +51,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ProtocBuff/Packet/Packet.csproj": {
+              "projectPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ProtocBuff/Packet/Packet.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

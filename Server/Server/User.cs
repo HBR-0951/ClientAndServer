@@ -1,42 +1,59 @@
 ﻿using System.Net.Sockets;
 using System.Timers;
+using ProtoBuff.Packet;
 
 namespace Server {
 
 
-    public class User {
-		private readonly string m_sessionId;
+	public class User {
+		private string m_sessionId { get; }
 		private readonly Socket m_tcpSocket;
 		protected Thread PacketReceivedThread { get; private set; }
 
 		protected static System.Timers.Timer? aTimer;
 		public bool isOffLine = false;
+		public int user_ID { get; }
+
+		
 
 		// Timer: local1 - local2
 		protected DateTime local1;
 		protected DateTime local2;
 		protected TimeSpan interval;
 
-		public bool hasMsg = false;
-		public string receiveMsg;
-        
-
-		public bool IsConnected {
+        public bool IsConnected {
 			get => m_tcpSocket.Connected;
 		}
 
-		public User(Socket tcpSocket, string session_Id) {
+		public delegate void PacketHandler(byte[] bytesPacket);
+
+		public event PacketHandler PacketEvent;
+
+		public User(Socket tcpSocket, string session_Id, int user_Id) {
 			this.m_tcpSocket = tcpSocket;
 			this.m_sessionId = session_Id;
+			this.user_ID = user_Id;
 
 			// Thread
 			PacketReceivedThread = new Thread(OnPacketReceived) { IsBackground = false };
 			PacketReceivedThread.Start();
 			local1 = DateTime.Now;
+
+			string msg = $"[ Time: {local1} ]  Connect to [ Target IP:{m_tcpSocket.RemoteEndPoint} ] Successful : [ User_id: {this.user_ID} ]";
+			byte[] bytesPacket = OnBuildPacket(msg, 4, this.user_ID);
+			Send(bytesPacket);
+
+			// 傳給client自己的userID
+			string userid = this.user_ID.ToString();
+
+			bytesPacket = OnBuildPacket(userid, 1, this.user_ID);
+			Send(bytesPacket);
 		}
 
-		// 當封包到達時
-		public virtual void OnPacketReceived() {
+        
+
+        // 當封包到達時
+        public virtual void OnPacketReceived() {
 
             // 服務器 及 客戶端 還處於接受連線狀態時，無限迴圈 -> 等待接受客戶端資料
             while (m_tcpSocket.Connected && !isOffLine)
@@ -48,18 +65,35 @@ namespace Server {
 
 					// 讀取資料
 					// Socket.Receive();
-					byte[] date = new byte[m_tcpSocket.Available];
-					int count = m_tcpSocket.Receive(date);
-					string msg = System.Text.Encoding.UTF8.GetString(date, 0, count);
-                    if (msg == "$")
+					byte[] data = new byte[m_tcpSocket.Available];
+					m_tcpSocket.Receive(data);
+					var receivePacket = new SamplePacket();
+                    receivePacket.UnPack(data);
+
+					var targetid = receivePacket.TargetID;
+					var sendid = receivePacket.SenderID;
+                    string msg = receivePacket.Message;
+					int function = receivePacket.Function;
+
+					//Console.WriteLine(receivePacket.ToString());
+					//Console.WriteLine("\ntargetid: " + targetid
+					//				+ "\nsenderid: " + sendid
+					//				+ "\nfunction: " + function
+					//				+ "\nmsg: " + msg);
+					switch (function)
                     {
-						continue;
-                    }    
-					else{
-						Console.WriteLine($"Server Data Received from [ User_ID : {m_sessionId} ]: " + msg);
-						receiveMsg = msg;
-						hasMsg = true;
-                    }
+						case 0: // client給空封包
+							break;
+						case 2: // server 轉發
+							this.OnPacket(data); // 執行訂閱的event
+							break;
+						case 3: // client傳給server
+							var senderid = receivePacket.SenderID;
+							Console.WriteLine("Server get msg from user[ " + senderid +" ]: " + msg);
+							break;
+						default:
+							break;
+					}
                 }
                 else
                 {
@@ -80,12 +114,12 @@ namespace Server {
 
         }
 
-        public void Send(string msg) {
-			if (!m_tcpSocket.Connected) return;
-
-			byte[] bytesPacket;
-			bytesPacket = System.Text.Encoding.UTF8.GetBytes(msg);
-			Console.WriteLine($"Send to [ User_ID : {m_sessionId} ] : " + msg);
+        public void Send(byte[] bytesPacket) {
+			
+			if (!m_tcpSocket.Connected)
+            {
+				return;
+			}
 			m_tcpSocket.Send(bytesPacket);
 		}
 
@@ -98,6 +132,45 @@ namespace Server {
 			m_tcpSocket.Close();
         }
 
+		private void OnPacket(byte[] bytesPacket)
+        {
+			if (PacketEvent != null)
+			{
+				PacketEvent.Invoke(bytesPacket);
+			}
+		}
+
+		/// <summary>
+		/// Function: 0: 傳送空封包,
+		///			  1: 傳送userID給client
+		///           2: server轉發,
+		///           3: 給server,
+		///           4: server 給 client       
+		/// </summary>
+		public byte[] OnBuildPacket(string msg, int function, int target_id)
+		{
+			var packet = new SamplePacket();
+			packet.ID = 123;
+			packet.Code = 0;
+			packet.TargetID = target_id;
+			if(function == 4)
+            {
+				packet.SenderID = -1;
+			}
+            else
+            {
+				packet.SenderID = this.user_ID;
+			}
+			
+			packet.Function = function;
+			packet.Message = msg;
+
+			//Console.WriteLine("sender_id: " + this.user_ID);
+			//Console.WriteLine("target_id: " + target_id);
+			byte[] bytesPacket = packet.ToPacketup();
+
+			return bytesPacket;
+		}
 	}
 }
 

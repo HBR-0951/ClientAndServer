@@ -5,7 +5,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Packet {
+namespace ProtoBuff.Packet
+{
     public abstract class Packet_Template {
 
         // Customer Var >> 自定義封包内容
@@ -41,7 +42,7 @@ namespace Packet {
         /// <summary>
         /// 封包内容大小
         /// </summary>
-        private int m_dataSize;
+        protected int m_dataSize;
 
         /// <summary>
         /// 變數在封包中的所引位置
@@ -61,13 +62,18 @@ namespace Packet {
             //指定封包尺寸
             var bytesPacket = new byte[SizeOfPacket];
 
+            
             System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(ID)).CopyTo(bytesPacket, IndexOf_ID);
             System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Code)).CopyTo(bytesPacket, IndexOf_Code);
-            System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(m_dataSize)).CopyTo(bytesPacket, IndexOf_dataSize);
+            
+            
+            
             if (m_data != null) {
-                m_data.CopyTo(bytesPacket, IndexOf_Code);
+                m_dataSize = m_data.Length;
+                System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(m_dataSize)).CopyTo(bytesPacket, IndexOf_dataSize);
+                m_data.CopyTo(bytesPacket, IndexOf_Data);
             }
-
+           
             return bytesPacket;
         }
 

@@ -2,12 +2,16 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ProtoBuff.Packet;
 
 namespace Server {
     public class Server : TcpServer_Template {
-        private static UInt64 m_id = 0;
+        private static UInt64 session_id = 0;
+        private static int user_id = 0;
 
-        protected static UInt64 UID_Generator => m_id++;
+
+        protected static UInt64 SID_Generator => session_id++;
+        protected static int UID_Generator => user_id++;
 
         protected new List<User> m_userList = new(10);
 
@@ -19,7 +23,7 @@ namespace Server {
 
         public Server(string name) : base(name) {
             _checkUserisOffLine = new Thread(checkUserOffLine);
-            _processingMsg = new Thread(ProcessMessage);
+            //_processingMsg = new Thread(ProcessMessage);
             OnInitialize();
         }
 
@@ -40,11 +44,15 @@ namespace Server {
                         Console.WriteLine("Connected");
 
                         // 創建一個user 給連接到的userSocket
+                        var sid = SID_Generator;
                         var uid = UID_Generator;
-                        var user = new User(userSocket, uid.ToString());
-                        DateTime localtime = DateTime.Now;
-                        user.Send($"[ Time: {localtime} ]  Connect to [ Target IP:{userSocket.RemoteEndPoint} ] Successful : [ User_id: {uid} ]");
+                      
+                        var user = new User(userSocket, sid.ToString(), uid);
+                        user.PacketEvent += OnUserPacketEventHandler;
 
+                        DateTime localtime = DateTime.Now;
+                        string msg = $"[ Time: {localtime} ]  Connect to [ Target IP:{m_tcpSocket.RemoteEndPoint} ] Successful : [ User_id: {this.user_ID} ]";
+                        Console.WriteLine(msg);
 
                         m_userList.Add(user); //保存用戶
                         
@@ -62,7 +70,7 @@ namespace Server {
 
             _awaitClient.Start(); // 啟動等待客戶端連線執行緒
             _checkUserisOffLine.Start(); // 檢查client 有無斷線
-            _processingMsg.Start(); // 處理經過的 Message
+            //_processingMsg.Start(); // 處理經過的 Message
             
 
         }
@@ -93,16 +101,16 @@ namespace Server {
 
         }
 
-        // 廣播
-        public void OnBroadcast(string msg) {
+        //// 廣播
+        //public void OnBroadcast(string msg) {
             
-            Console.WriteLine("BroadCast: " + msg);
+        //    Console.WriteLine("BroadCast: " + msg);
 
-            foreach (var user in m_userList) {
-                Console.WriteLine("1");
-                user.Send(msg);
-            }
-        }
+        //    foreach (var user in m_userList) {
+        //        Console.WriteLine("1");
+        //        user.Send(msg);
+        //    }
+        //}
 
         protected void checkUserOffLine()
         {
@@ -125,47 +133,41 @@ namespace Server {
             }
         }
 
-        protected void ProcessMessage()
+
+        //找到前往的user然後傳送封包
+        public void OnUserPacketEventHandler(byte[] bytesPacket)
         {
-            while (!isCloseServer)
+            var receivedPacket = new SamplePacket();
+            receivedPacket.UnPack(bytesPacket);
+            var target_id = receivedPacket.TargetID;
+            var sender_id = receivedPacket.SenderID;
+            //Console.WriteLine("sender_id: " + sender_id);
+            //Console.WriteLine("target_id: " + target_id);
+
+            bool hasSend = false;
+            foreach (var user in m_userList)
             {
-                if(m_userList != null)
+                if (target_id != sender_id && target_id == user.user_ID)
                 {
-                    string msg;
-                    User sendUser;
-                    foreach (var user in m_userList)
-                    {
-                        if (user.hasMsg)
-                        {
-                            msg = user.receiveMsg;
-                            sendUser = user;
-                            bool isSend = false;
-                            foreach (var receiver in m_userList)
-                            {
-                                if(receiver != sendUser)
-                                {
-                                    receiver.Send(msg);
-                                    isSend = true;
-                                }
-                            }
-                            if (!isSend)
-                            {
-                                Console.WriteLine("Can't find Client to receive message.");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Send Successfully");
-                            }
-                            isSend = true;
-                            user.hasMsg = false;
-                            break;
-                         
-                        }
-                    }
-                    
+                    user.Send(bytesPacket);
+                    hasSend = true;
+                    break;
                 }
-                Thread.Sleep(100);
             }
+            string msg = "Send Successfully";
+            if (!hasSend)
+            {
+                msg = "Can't find target user";
+                foreach (var user in m_userList)
+                {
+                    if (user.user_ID == sender_id)
+                    {
+                        byte[] data = user.OnBuildPacket(msg, 4, sender_id);
+                        user.Send(data);
+                        break;
+                    }
+                }
+            } 
         }
     }
 }
