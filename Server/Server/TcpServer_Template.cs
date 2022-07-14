@@ -12,8 +12,8 @@ namespace Server {
 		protected int m_port = 8888;
 
 		// 執行緒(底線表示為執行緒變數)
-		protected Thread _awaitClient;
-		protected Thread _packetReceived;
+		protected Thread? _awaitClient;
+		protected Thread? _packetReceived;
 
 		protected List<Socket> m_userList = new(10);
 
@@ -39,10 +39,12 @@ namespace Server {
 
 				var userSocket = m_tcpSocket.Accept(); //程式會卡在此處等待客戶端的連線
 
-				//為 user 開啟 一個執行緒，持續等待該用戶的資料
-				_packetReceived.Start(userSocket); // 傳入用戶的Socket作為參數
+                //為 user 開啟 一個執行緒，持續等待該用戶的資料
+#pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
+                _packetReceived.Start(userSocket); // 傳入用戶的Socket作為參數
+#pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
 
-				m_userList.Add(userSocket); //保存用戶
+                m_userList.Add(userSocket); //保存用戶
 			}
 
         }
@@ -64,11 +66,13 @@ namespace Server {
 		// 啟動服務器(啟動監聽)
 		public virtual void OnStart() {
 			m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
-			
-			_awaitClient.Start(); // 啟動等待客戶端連線執行緒
-			
 
-		}
+#pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
+            _awaitClient.Start(); // 啟動等待客戶端連線執行緒
+#pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
+
+
+        }
 
 		// 關閉服務器
 		public virtual void OnClosed()

@@ -108,8 +108,8 @@ namespace ProtoBuff.Packet {
         public new string ToString()
         {
             return
-                 
-                 "----------------------------------------------\n"
+                 "\n Packet Content\n"
+                 + "----------------------------------------------\n"
                  + "ID\t" + ID + "\n"
                  + "Code\t" + Code + "\n"
                  + "Function\t" + Function + "\n"

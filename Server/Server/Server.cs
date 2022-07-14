@@ -21,11 +21,13 @@ namespace Server {
 
         protected bool isCloseServer = false;
 
+#pragma warning disable CS8618 // 退出建構函式時，不可為 Null 的欄位必須包含非 Null 值。請考慮宣告為可為 Null。
         public Server(string name) : base(name) {
             _checkUserisOffLine = new Thread(checkUserOffLine);
             //_processingMsg = new Thread(ProcessMessage);
             OnInitialize();
         }
+#pragma warning restore CS8618 // 退出建構函式時，不可為 Null 的欄位必須包含非 Null 值。請考慮宣告為可為 Null。
 
         protected override void OnInitialize() {
 
@@ -51,7 +53,7 @@ namespace Server {
                         user.PacketEvent += OnUserPacketEventHandler;
 
                         DateTime localtime = DateTime.Now;
-                        string msg = $"[ Time: {localtime} ]  Connect to [ Target IP:{m_tcpSocket.RemoteEndPoint} ] Successful : [ User_id: {this.user_ID} ]";
+                        string msg = $"[ Time: {localtime} ]  Connect to [ Target IP:{m_tcpSocket.RemoteEndPoint} ] Successful : [ User_id: {uid} ]";
                         Console.WriteLine(msg);
 
                         m_userList.Add(user); //保存用戶
@@ -68,7 +70,9 @@ namespace Server {
         public override void OnStart() {
             m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
 
+#pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
             _awaitClient.Start(); // 啟動等待客戶端連線執行緒
+#pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
             _checkUserisOffLine.Start(); // 檢查client 有無斷線
             //_processingMsg.Start(); // 處理經過的 Message
             
@@ -149,6 +153,7 @@ namespace Server {
             {
                 if (target_id != sender_id && target_id == user.user_ID)
                 {
+                    
                     user.Send(bytesPacket);
                     hasSend = true;
                     break;
