@@ -123,19 +123,27 @@ namespace Client
                     if (s != null)
                     {
                         Console.WriteLine("send msg");
-                        byte[] bytesPacket = OnBuildPacket(s, 2, 1);
+                        byte[] bytesPacket = OnBuildPacket(s, 5, 2);
                         Send(bytesPacket);
                     }
-     //               for (int i = 0; i < 100; i++)
-					//{
-					//	byte[] bytesPacket = OnBuildPacket((i + 1).ToString(), 2, 1);
-					//	Send(bytesPacket);
-					//	Thread.Sleep(100);
-					//}
+
+					// 測試用連發訊息
+                    //for (int i = 0; i < 100; i++)
+                    //               {
+                    //	string str = "";
+                    //	Random random = new Random();
+                    //	for(int j = 0; j < random.Next(10,100); j++)
+                    //                   {
+                    //		str += "t";
+                    //                   }
+                    //                   byte[] bytesPacket = OnBuildPacket(str + ": " + (i+1).ToString(), 2, 1);
+                    //                   Send(bytesPacket);
+                    //                   Thread.Sleep(100);
+                    //               }
 
 
-				}
-				catch (Exception ex)
+                }
+                catch (Exception ex)
 				{
 					Console.WriteLine(ex.Message);
 				}
@@ -198,13 +206,14 @@ namespace Client
 		///			  1: 傳送userID給client
 		///           2: server轉發,
 		///           3: 給server,
-		///           4: server 給 client       
+		///           4: server 給 client
+        ///           5: 群發
 		/// </summary>
 		public byte[] OnBuildPacket(string msg, int function, int target_id)
 		{
 			var packet = new SamplePacket();
-			packet.ID = 123;
-			packet.Code = 0;
+			packet.ID = 12;
+			packet.Code = 123;
 			packet.TargetID = target_id;
 			packet.SenderID = this.user_id;
 			packet.Function = function;
@@ -340,6 +349,7 @@ namespace Client
 			{
 				string msg = receivePacket.Message;
 				int function = receivePacket.Function;
+				Console.WriteLine(receivePacket.ToString());
 
 				switch (function)
 				{
@@ -350,11 +360,12 @@ namespace Client
 						break;
 					case 2: // server 轉發
 						var target_id = receivePacket.TargetID;
+						var sender_id = receivePacket.SenderID;
 						Console.WriteLine("target_id: " + target_id);
 						Console.WriteLine("user_id: " + this.user_id);
 						if (target_id == this.user_id)
 						{
-							Console.WriteLine("Client get msg: " + msg);
+							Console.WriteLine("Client get msg: " + msg + " from Client[ " + sender_id + " ]");
 						}
 						else
 						{
@@ -363,6 +374,10 @@ namespace Client
 						break;
 					case 4: // server 傳給 client
 						Console.WriteLine("Server send msg: " + msg);
+						break;
+					case 5: // 群發
+						sender_id = receivePacket.SenderID;
+						Console.WriteLine("Client get msg: " + msg + " from Client[ " + sender_id + " ]");
 						break;
 					default:
 						break;

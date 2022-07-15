@@ -325,6 +325,9 @@ namespace Server {
 						var senderid = receivePacket.SenderID;
 						Console.WriteLine("Server get msg from user[ " + senderid + " ]: " + msg);
 						break;
+					case 5: // 群發
+						this.OnPacket(receiveData);
+						break;
 					default:
 						break;
 				}

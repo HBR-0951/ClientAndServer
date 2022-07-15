@@ -143,36 +143,58 @@ namespace Server {
         {
             var receivedPacket = new SamplePacket();
             receivedPacket.UnPack(bytesPacket);
-            var target_id = receivedPacket.TargetID;
-            var sender_id = receivedPacket.SenderID;
-            //Console.WriteLine("sender_id: " + sender_id);
-            //Console.WriteLine("target_id: " + target_id);
 
-            bool hasSend = false;
-            foreach (var user in m_userList)
+            var function = receivedPacket.Function;
+
+            // 假設是轉發
+            if(function == 2)
             {
-                if (target_id != sender_id && target_id == user.user_ID)
-                {
-                    
-                    user.Send(bytesPacket);
-                    hasSend = true;
-                    break;
-                }
-            }
-            string msg = "Send Successfully";
-            if (!hasSend)
-            {
-                msg = "Can't find target user";
+                var target_id = receivedPacket.TargetID;
+                var sender_id = receivedPacket.SenderID;
+                //Console.WriteLine("sender_id: " + sender_id);
+                //Console.WriteLine("target_id: " + target_id);
+
+                bool hasSend = false;
                 foreach (var user in m_userList)
                 {
-                    if (user.user_ID == sender_id)
+                    if (target_id != sender_id && target_id == user.user_ID)
                     {
-                        byte[] data = user.OnBuildPacket(msg, 4, sender_id);
-                        user.Send(data);
+
+                        user.Send(bytesPacket);
+                        hasSend = true;
                         break;
                     }
                 }
-            } 
+                string msg = "Send Successfully";
+                if (!hasSend)
+                {
+                    msg = "Can't find target user";
+                    foreach (var user in m_userList)
+                    {
+                        if (user.user_ID == sender_id)
+                        {
+                            byte[] data = user.OnBuildPacket(msg, 4, sender_id);
+                            user.Send(data);
+                            break;
+                        }
+                    }
+                }
+            }
+            // 假設是群發
+            else if(function == 5)
+            {
+                var sender_id = receivedPacket.SenderID;
+                foreach (var user in m_userList)
+                {
+                    if (user.user_ID != sender_id)
+                    {
+                        user.Send(bytesPacket);
+                        continue;
+                    }
+                }
+                
+            }
+            
         }
     }
 }

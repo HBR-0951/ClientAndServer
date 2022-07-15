@@ -27,7 +27,8 @@ namespace ProtoBuff.Packet {
         ///              1: 傳送userID給client
         ///              2: server轉發,
         ///              3: 給server,
-        ///              4: server 給 client
+        ///              4: server 給 client,
+        ///              5: 群發
         ///              
         ///              
         /// </summary>
