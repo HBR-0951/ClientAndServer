@@ -1,16 +1,18 @@
 ﻿<Properties StartupConfiguration="{84307059-C780-4FF1-99C5-2DCB130FBEA8}|Default">
-  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.ItemProperties.Server PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workbench ActiveDocument="Server/User.cs">
     <Files>
-      <File FileName="Server/Program.cs" Line="25" Column="50" />
-      <File FileName="Server/TcpServer_Template.cs" Line="25" Column="4" />
-      <File FileName="Server/Server.cs" Line="55" Column="48" />
-      <File FileName="Server/User.cs" Line="21" Column="29" />
+      <File FileName="Server/Program.cs" Line="19" Column="1" />
+      <File FileName="Server/TcpServer_Template.cs" Line="71" Column="25" />
+      <File FileName="Server/Server.cs" Line="195" Column="17" />
+      <File FileName="Server/User.cs" Line="78" Column="18" />
       <File FileName="../ProtocBuff/Packet/Program.cs" Line="22" Column="41" />
-      <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="38" Column="17" />
-      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="110" Column="19" />
+      <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="125" Column="36" />
+      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="112" Column="39" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -29,8 +31,6 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
 </Properties>
