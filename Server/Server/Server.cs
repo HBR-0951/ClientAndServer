@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using ProtoBuff.Packet;
 
+
 namespace Server {
     public class Server : TcpServer_Template {
         private static UInt64 session_id = 0;
@@ -20,6 +21,10 @@ namespace Server {
         
 
         protected bool isCloseServer = false;
+
+
+        // MQ
+        public MQ mq;
 
 #pragma warning disable CS8618 // 退出建構函式時，不可為 Null 的欄位必須包含非 Null 值。請考慮宣告為可為 Null。
         public Server(string name) : base(name) {
@@ -50,7 +55,10 @@ namespace Server {
                         var uid = UID_Generator;
                       
                         var user = new User(userSocket, sid.ToString(), uid);
-                        user.PacketEvent += OnUserPacketEventHandler;
+                        //// 加上packet事件處理方法
+                        //user.PacketEvent += OnUserPacketEventHandler;
+                        // 加上packet MQ 方法
+                        user.PacketMQEvent += OnPacketMQ;
 
                         DateTime localtime = DateTime.Now;
                         string msg = $"[ Time: {localtime} ]  Connect to [ Target IP:{m_tcpSocket.RemoteEndPoint} ] Successful : [ User_id: {uid} ]";
@@ -70,11 +78,17 @@ namespace Server {
         public override void OnStart() {
             m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
 
-#pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
-            _awaitClient.Start(); // 啟動等待客戶端連線執行緒
-#pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
+            if(_awaitClient != null)
+            {
+                _awaitClient.Start(); // 啟動等待客戶端連線執行緒
+            }
+            
+
             _checkUserisOffLine.Start(); // 檢查client 有無斷線
-            //_processingMsg.Start(); // 處理經過的 Message
+            // 訂閱MQ
+            mq = new MQ(this.Name);
+            mq.PacketEvent += OnUserPacketEventHandler;
+            
             
 
         }
@@ -138,63 +152,75 @@ namespace Server {
         }
 
 
-        //找到前往的user然後傳送封包
-        public void OnUserPacketEventHandler(byte[] bytesPacket)
+        //處理packet的event
+        public void OnUserPacketEventHandler(SamplePacket receivedPacket)
         {
-            var receivedPacket = new SamplePacket();
-            receivedPacket.UnPack(bytesPacket);
+            var target_id = receivedPacket.TargetID;
+            int sender_id = receivedPacket.SenderID;
+            string msg = receivedPacket.Message;
+            int function = receivedPacket.Function;
+            var packetLength = receivedPacket.SizeOfPacket;
 
-            var function = receivedPacket.Function;
-
-            // 假設是轉發
-            if(function == 2)
+            //Console.WriteLine(receivePacket.ToString());
+            //        Console.WriteLine("\ntargetid: " + targetid
+            //                        + "\nsenderid: " + sendid
+            //                        + "\nfunction: " + function
+            //+ "\npacketLength: " + packetLength
+            //+ "\nmsg: " + msg);
+            switch (function)
             {
-                var target_id = receivedPacket.TargetID;
-                var sender_id = receivedPacket.SenderID;
-                //Console.WriteLine("sender_id: " + sender_id);
-                //Console.WriteLine("target_id: " + target_id);
-
-                bool hasSend = false;
-                foreach (var user in m_userList)
-                {
-                    if (target_id != sender_id && target_id == user.user_ID)
-                    {
-
-                        user.Send(bytesPacket);
-                        hasSend = true;
-                        break;
-                    }
-                }
-                string msg = "Send Successfully";
-                if (!hasSend)
-                {
-                    msg = "Can't find target user";
+                case 2: // server 轉發
+                    bool hasSend = false;
                     foreach (var user in m_userList)
                     {
-                        if (user.user_ID == sender_id)
+                        if (target_id != sender_id && target_id == user.user_ID)
                         {
-                            byte[] data = user.OnBuildPacket(msg, 4, sender_id);
-                            user.Send(data);
+                            var bytesPacket = user.OnBuildPacket(msg, function, target_id);
+                            user.Send(bytesPacket);
+                            hasSend = true;
                             break;
                         }
                     }
-                }
-            }
-            // 假設是群發
-            else if(function == 5)
-            {
-                var sender_id = receivedPacket.SenderID;
-                foreach (var user in m_userList)
-                {
-                    if (user.user_ID != sender_id)
+                    
+                    if (!hasSend)
                     {
-                        user.Send(bytesPacket);
-                        continue;
+                        string s = "Can't find target user";
+                        foreach (var user in m_userList)
+                        {
+                            if (user.user_ID == sender_id)
+                            {
+                                byte[] data = user.OnBuildPacket(s, 4, sender_id);
+                                user.Send(data);
+                                break;
+                            }
+                        }
                     }
-                }
-                
+                    break;
+                case 3: // client傳給server
+                    var senderid = receivedPacket.SenderID;
+                    Console.WriteLine("Server get msg from user[ " + senderid + " ]: " + msg);
+                    break;
+                case 5: // 群發
+                    foreach (var user in m_userList)
+                    {
+                        if (user.user_ID != sender_id)
+                        {
+                            var bytesPacket = user.OnBuildPacket(msg, function, target_id);
+                            user.Send(bytesPacket);
+                            continue;
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
-            
+
+        }
+
+        // push packet in Queue
+        public void OnPacketMQ(SamplePacket packet)
+        {
+            mq.push(this.Name, packet);
         }
     }
 }

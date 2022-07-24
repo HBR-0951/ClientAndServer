@@ -4,11 +4,12 @@ namespace Server
 {
 	public class MQ
 	{
-		public MQ(string user_id)
+		public MQ(string serverName)
 		{
 			Node temp = new Node();
-			temp.Name = user_id;
+			temp.Name = serverName;
 			temp.Type = "123";
+			temp.packetQueue = new Queue<SamplePacket>();
 
 			Queues.Add(temp);
 
@@ -20,8 +21,10 @@ namespace Server
 		protected Thread? _msgObserver;
 		public List<Node> Queues = new();
 
-		public bool isClose = false;
+		public delegate void PacketHandler(SamplePacket packet);
+		public event PacketHandler PacketEvent;
 
+		public bool isClose = false;
 
 		public struct Node
 		{
@@ -32,8 +35,21 @@ namespace Server
 
 		
 
-		public void push(SamplePacket msg) { }
-		public void pop() { }
+		public void push(string serverName, SamplePacket packet) {
+			foreach(var node in Queues)
+            {
+				if(node.Name == serverName)
+                {
+					node.packetQueue.Enqueue(packet);
+					break;
+                }
+            }
+		}
+		public SamplePacket pop(Node node) {
+			SamplePacket packet = node.packetQueue.Dequeue();
+
+			return packet;
+		}
 		public void Run() {
 			// 假設還跟server連接
             while (!isClose)
@@ -41,10 +57,23 @@ namespace Server
 				// 檢查 List<Node> 中每個 Node
 				foreach (var node in Queues)
                 {
+
 					// 假設 node 中的queue裡有資料，就pop出來
 					if(node.packetQueue.Count > 0)
                     {
-						pop();
+						var packet = pop(node);
+						//var target_id = packet.TargetID;
+						//int sender_id = packet.SenderID;
+						//string msg = packet.Message;
+						//int function = packet.Function;
+						//var packetLength = packet.SizeOfPacket;
+
+      //                  Console.WriteLine("\ntargetid: " + target_id
+      //                                  + "\nsenderid: " + sender_id
+      //                                  + "\nfunction: " + function
+						//				+ "\npacketLength: " + packetLength
+						//				+ "\nmsg: " + msg);
+                        this.OnPacket(packet);
 						continue;
                     }
                 }
@@ -52,6 +81,14 @@ namespace Server
 
             }
 		}
+
+		public void OnPacket(SamplePacket packet)
+        {
+			if(PacketEvent != null)
+            {
+				PacketEvent.Invoke(packet);
+            }
+        }
 
 
 		

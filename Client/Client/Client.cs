@@ -18,27 +18,18 @@ namespace Client
 		protected Thread? _sendPacket;
 
 		// Timer
-		protected DateTime local1;
-		protected DateTime local2;
-		protected TimeSpan interval;
-		protected int limit_Interival = 5;
+		
 
 		//userid
 		public int user_id { get; set; }
 		public bool hasGetUserID = false;
 
+		
 		// packet
-		protected byte[] receiveLength = new byte[sizeof(int)];
-		protected byte[] receiveData;
-		protected SamplePacket receivePacket = new SamplePacket();
-		protected byte[] overData;
 		protected int packetLength = 0;
-		protected int receivePacketLength = 0;
-		protected int countLength = 0;
-		protected bool isFullPacket = false;
-		protected bool isFirst = true;
-		protected int IndexOfReveiveData = 0;
-		protected int IndexOfLastLength = 0;
+		protected byte[] dataBuffer = new byte[1024];
+		protected int IndexOfBuffer = 0;
+		protected int dataBufferLength = 0;
 		protected bool hasOverPacket = false;
 
 
@@ -65,35 +56,17 @@ namespace Client
 		{
 
 
-			while (m_tcpSocket.Connected)
+			while (ISConnected)
 			{
 
-				if (m_tcpSocket.Available != 0)
+				var packet = OnUnPack();
+
+				if (packet != null)
 				{
-					// 讀取資料
-					byte[] data = new byte[m_tcpSocket.Available];
-					m_tcpSocket.Receive(data);
-
-					//解封包
-					OnUnPack(data);
-
-
-
+					PacketEvent(packet);
 				}
 				else
 				{
-					if (hasGetUserID)
-					{
-						local2 = DateTime.Now;
-						interval = local2 - local1;
-						if (interval.Seconds >= limit_Interival)
-						{
-							byte[] bytesPacket = OnBuildPacket("$", 0, -1);
-							Send(bytesPacket);
-							local1 = DateTime.Now;
-						}
-
-					}
 					Thread.Sleep(100);
 
 				}
@@ -118,12 +91,12 @@ namespace Client
 				{
 					string? s = Console.ReadLine();
 
-					local1 = DateTime.Now;
+					
 
                     if (s != null)
                     {
                         Console.WriteLine("send msg");
-                        byte[] bytesPacket = OnBuildPacket(s, 5, 2);
+                        byte[] bytesPacket = OnBuildPacket(s, 5, 1);
                         Send(bytesPacket);
                     }
 
@@ -179,7 +152,7 @@ namespace Client
 				Console.WriteLine("Connect");
 				_awaitServer.Start();
 				_sendPacket.Start();
-				local1 = DateTime.Now;
+				
 			}
 			catch (SocketException e)
 			{
@@ -202,12 +175,10 @@ namespace Client
 		}
 
 		/// <summary>
-		/// Function: 0: 傳送空封包,
-		///			  1: 傳送userID給client
+		/// Function: 1: 傳送userID給client
 		///           2: server轉發,
 		///           3: 給server,
-		///           4: server 給 client
-        ///           5: 群發
+		///           4: server 給 client       
 		/// </summary>
 		public byte[] OnBuildPacket(string msg, int function, int target_id)
 		{
@@ -227,170 +198,163 @@ namespace Client
 			return bytesPacket;
 		}
 
-		// 解封包
-		public void OnUnPack(byte[] data)
+		// new 解封包 
+		public SamplePacket OnUnPack()
 		{
-			// 計算得到的資料長度有沒有符合 4bytes，沒有的話就繼續等待下次接收資料
-			countLength += data.Length;
+			bool hasPcketLength = false;
+			byte[] fullPacket;
+			SamplePacket aFullPacket = new SamplePacket();
+			int packetLength = 0;
 
 
-			// 假設收到的資料長度 < 4
-			if (countLength < 4)
+			while (ISConnected)
 			{
-				// 先把值取出來，然後再把他複製到reveiveLength上，然後記住他存到哪個index
-				byte[] tempLength = SamplePacket.Extract(data, 0, data.Length);
-				Array.Copy(tempLength, 0, receiveLength, IndexOfLastLength, data.Length);
 
-				IndexOfLastLength += data.Length;
-
-
-			}
-			// 假設取到的資料長度 >= 4
-			else
-			{
-				// 假設是第一次（可以取長度的時候）
-				if (isFirst)
+				if (m_tcpSocket.Available != 0 || hasOverPacket == true)
 				{
-					// 把封包長度的值複製過去並負值給reveivePAcketLength
-					byte[] tempLength = SamplePacket.Extract(data, 0, (4 - IndexOfLastLength));
-					Array.Copy(tempLength, 0, receiveLength, IndexOfLastLength, (4 - IndexOfLastLength));
-					receivePacketLength = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(receiveLength, 0));
+					Console.WriteLine("aa");
+                    if (hasOverPacket)
+                    {
+						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
+						byte[] tempBuffer = new byte[1024];
+						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
+						dataBuffer = tempBuffer;
+						IndexOfBuffer = 0;
+						Console.WriteLine("BufferLength: " + dataBufferLength);
+						hasOverPacket = false;
+                    }
+                    else
+                    {
+						// Put all receiveData in dataBuffer
+						byte[] temp = new byte[m_tcpSocket.Available];
+						m_tcpSocket.Receive(temp);
 
+						int dataLength = temp.Length;
+						Console.WriteLine("dataLength: " + dataLength);
+						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
+						byte[] tempBuffer = new byte[1024];
+						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
 
-					// 給receiveData存取的資料大小空間
-					receiveData = new byte[receivePacketLength];
-					int IndexOfstartData = (4 - IndexOfLastLength);
-					// 假設得到的資料等於封包長度
-					if (countLength - 4 == receivePacketLength)
-					{
-						// 把全部的data給receiveData
-						receiveData = SamplePacket.Extract(data, IndexOfstartData, countLength - 4);
-						receivePacket.UnPack(receiveData);
-						isFullPacket = true;
+						dataBuffer = tempBuffer;
+
+						temp.CopyTo(dataBuffer, dataBufferLength);
+
+						dataBufferLength += dataLength;
+
+						Console.WriteLine("BufferLength: " + dataBufferLength);
+
+						IndexOfBuffer = 0;
 					}
-					// 假設得到的資料比給的封包長度還大
-					else if (countLength - 4 > receivePacketLength)
+					
+
+
+
+
+
+
+					// 假設還沒得到packet指定長度
+					if (!hasPcketLength)
 					{
-						hasOverPacket = true;
-
-						// 符合封包長度大小的data部分把值給receiveData
-						receiveData = SamplePacket.Extract(data, IndexOfstartData, receivePacketLength);
-						receivePacket.UnPack(receiveData);
-						isFullPacket = true;
-
-						// 把剩下的封包放進一個暫存的byte[] overData
-						int IndexOfOverData = IndexOfstartData + receivePacketLength;
-						int length = data.Length - IndexOfOverData;
-						overData = SamplePacket.Extract(data, IndexOfOverData, length);
-
-					} // 假設得到的資料長度 < 封包長度 
-					else
-					{
-						//剩餘data的長度
-						int length = data.Length - IndexOfstartData;
-						// 剩下的data部分把值給receiveData
-						receiveData = SamplePacket.Extract(data, IndexOfstartData, length);
-
-						// 記錄資料存到receiveData的位置，因為是第一次，所以存的index等於length-1
-						IndexOfReveiveData = length - 1;
-
-					}
-					isFirst = false;
-				}
-				// 假設不是第一次，reveiveData 要用字元相加
-				else
-				{
-					// 假設得到的資料(扣掉資料長度) == 封包長度
-					if (countLength - 4 == receivePacketLength)
-					{
-						// 把所有資料加進receiveData
-						byte[] tempData = SamplePacket.Extract(data, 0, data.Length);
-						Array.Copy(tempData, 0, receiveData, IndexOfReveiveData, data.Length);
-
-						receivePacket.UnPack(receiveData);
-						isFullPacket = true;
-					}
-					// 假設得到的資料(扣掉資料長度) > 封包長度
-					else if (countLength - 4 > receivePacketLength)
-					{
-						hasOverPacket = true;
-
-						// 符合封包長度大小的data部分 加上 receiveData
-						int length = receivePacketLength - IndexOfReveiveData;
-						byte[] tempData = SamplePacket.Extract(data, 0, length);
-						Array.Copy(tempData, 0, receiveData, IndexOfReveiveData, length);
-						receivePacket.UnPack(receiveData);
-						isFullPacket = true;
-
-						// 把剩下的封包放進一個暫存的byte[] overData
-						int IndexOfOverData = length;
-						length = data.Length - IndexOfOverData;
-						overData = SamplePacket.Extract(data, IndexOfOverData, length);
-
-					} // 假設得到的資料長度 < 封包長度 
-					else
-					{
-						// 剩下的資料長度
-						int length = data.Length;
-						// 剩下的data部分把值給receiveData
-						receiveData = SamplePacket.Extract(data, IndexOfReveiveData, length);
-
-						// 記錄資料存到的位置
-						IndexOfReveiveData += length;
-
-					}
-				}
-
-
-			}
-
-			// 假設是完整的封包
-			if (isFullPacket)
-			{
-				string msg = receivePacket.Message;
-				int function = receivePacket.Function;
-				Console.WriteLine(receivePacket.ToString());
-
-				switch (function)
-				{
-					case 1: // 得到user_id
-						this.user_id = Int32.Parse(msg);
-						Console.WriteLine("Client get userid: " + this.user_id);
-						hasGetUserID = true;
-						break;
-					case 2: // server 轉發
-						var target_id = receivePacket.TargetID;
-						var sender_id = receivePacket.SenderID;
-						Console.WriteLine("target_id: " + target_id);
-						Console.WriteLine("user_id: " + this.user_id);
-						if (target_id == this.user_id)
+						// 假設buffer不足4bytes，就繼續等待收到資料
+						if (dataBufferLength < 4)
 						{
-							Console.WriteLine("Client get msg: " + msg + " from Client[ " + sender_id + " ]");
+							Thread.Sleep(100);
+							continue;
 						}
 						else
 						{
-							Console.WriteLine("The msg is sent to wrong place");
+							byte[] tempLength = SamplePacket.Extract(dataBuffer, IndexOfBuffer, 4);
+							IndexOfBuffer += 4;
+							dataBufferLength -= 4;
+							packetLength = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(tempLength, 0));
+							hasPcketLength = true;
+					
 						}
-						break;
-					case 4: // server 傳給 client
-						Console.WriteLine("Server send msg: " + msg);
-						break;
-					case 5: // 群發
-						sender_id = receivePacket.SenderID;
-						Console.WriteLine("Client get msg: " + msg + " from Client[ " + sender_id + " ]");
-						break;
-					default:
-						break;
+					}
+
+					if (hasPcketLength)
+					{
+						// 安全性檢查
+						if (packetLength <= 0)
+						{
+							Console.WriteLine("Has Wrong");
+							break;
+						}
+						// 假設長度符合
+						if (dataBufferLength >= packetLength)
+						{
+							
+							fullPacket = SamplePacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
+							IndexOfBuffer += packetLength;
+							dataBufferLength -= packetLength;
+							aFullPacket.UnPack(fullPacket);
+
+							if(dataBufferLength > 0)
+                            {
+								hasOverPacket = true;
+                            }
+							return aFullPacket;
+						}
+						else
+						{
+							Thread.Sleep(100);
+							continue;
+						}
+
+
+					}
+
 				}
-				isFullPacket = false;
-				isFirst = true;
-				countLength = 0;
+				else
+				{
+					Thread.Sleep(100);
+				}
 			}
-			// 假設有overPacket，遞迴呼叫 OnUnPack() 解剩下的封包
-			if (hasOverPacket)
+
+
+			return null;
+
+
+		}
+
+		protected void PacketEvent(SamplePacket packet)
+        {
+			var target_id = packet.TargetID;
+			int sender_id = packet.SenderID;
+			string msg = packet.Message;
+			int function = packet.Function;
+			var packetLength = packet.SizeOfPacket;
+
+			//Console.WriteLine(receivePacket.ToString());
+			//        Console.WriteLine("\ntargetid: " + targetid
+			//                        + "\nsenderid: " + sendid
+			//                        + "\nfunction: " + function
+			//+ "\npacketLength: " + packetLength
+			//+ "\nmsg: " + msg);
+			switch (function)
 			{
-				hasOverPacket = false;
-				OnUnPack(overData);
+				case 1: // 得到user_id
+					this.user_id = Int32.Parse(msg);
+					Console.WriteLine("Client get userid: " + this.user_id);
+					hasGetUserID = true;
+					break;
+				case 2: // server 轉發
+					Console.WriteLine("target_id: " + target_id);
+					Console.WriteLine("user_id: " + this.user_id);
+					if (target_id == this.user_id)
+					{
+						Console.WriteLine("Client get msg: " + msg);
+					}
+					else
+					{
+						Console.WriteLine("The msg is sent to wrong place");
+					}
+					break;
+				case 4: // server 傳給 client
+					Console.WriteLine("Server send msg: " + msg);
+					break;
+				default:
+					break;
 			}
 		}
 
