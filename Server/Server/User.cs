@@ -90,7 +90,7 @@ namespace Server {
 
 		}
 
-        	
+
 		// new 解封包 
 		public SamplePacket OnUnPack()
 		{
@@ -98,60 +98,71 @@ namespace Server {
 			byte[] fullPacket;
 			SamplePacket aFullPacket = new SamplePacket();
 			int packetLength = 0;
-			
-			
-            while (IsConnected)
-            {
-				
-				if (m_tcpSocket.Available != 0)
+
+
+			while (IsConnected)
+			{
+
+				if (m_tcpSocket.Available != 0 || hasOverPacket == true)
 				{
-					// Put all receiveData in dataBuffer
-					byte[] temp = new byte[m_tcpSocket.Available];
-					m_tcpSocket.Receive(temp);
+					if (hasOverPacket)
+					{
+						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
+						byte[] tempBuffer = new byte[1024];
+						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
+						dataBuffer = tempBuffer;
+						IndexOfBuffer = 0;
+						hasOverPacket = false;
+					}
+					else
+					{
+						// Put all receiveData in dataBuffer
+						byte[] temp = new byte[m_tcpSocket.Available];
+						m_tcpSocket.Receive(temp);
 
-					int dataLength = temp.Length;
-					
+						int dataLength = temp.Length;
+						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
+						byte[] tempBuffer = new byte[1024];
+						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
 
-					// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
-					byte[] tempBuffer = new byte[1024];
-					Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
+						dataBuffer = tempBuffer;
 
-					dataBuffer = tempBuffer;
+						temp.CopyTo(dataBuffer, dataBufferLength);
 
-					temp.CopyTo(dataBuffer, dataBufferLength);
+						dataBufferLength += dataLength;
 
-					dataBufferLength += dataLength;
-					
 
-					IndexOfBuffer = 0;
+						IndexOfBuffer = 0;
+					}
 
-				
-					
-					
+
+
+
+
 
 
 					// 假設還沒得到packet指定長度
 					if (!hasPcketLength)
-                    {
+					{
 						// 假設buffer不足4bytes，就繼續等待收到資料
-						if(dataBufferLength < 4)
-                        {
+						if (dataBufferLength < 4)
+						{
 							Thread.Sleep(100);
 							continue;
-                        }
-                        else
-                        {
+						}
+						else
+						{
 							byte[] tempLength = SamplePacket.Extract(dataBuffer, IndexOfBuffer, 4);
 							IndexOfBuffer += 4;
 							dataBufferLength -= 4;
 							packetLength = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(tempLength, 0));
 							hasPcketLength = true;
-							
-                        }
-                    }
 
-					if(hasPcketLength)
-                    {
+						}
+					}
+
+					if (hasPcketLength)
+					{
 						// 安全性檢查
 						if (packetLength <= 0)
 						{
@@ -159,19 +170,25 @@ namespace Server {
 							break;
 						}
 						// 假設長度符合
-						if(dataBufferLength >= packetLength)
-                        {
+						if (dataBufferLength >= packetLength)
+						{
+
 							fullPacket = SamplePacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
 							IndexOfBuffer += packetLength;
 							dataBufferLength -= packetLength;
 							aFullPacket.UnPack(fullPacket);
+
+							if (dataBufferLength > 0)
+							{
+								hasOverPacket = true;
+							}
 							return aFullPacket;
 						}
-                        else
-                        {
+						else
+						{
 							Thread.Sleep(100);
 							continue;
-                        }
+						}
 
 
 					}
@@ -183,12 +200,11 @@ namespace Server {
 				}
 			}
 
-            
+
 			return null;
 
-			
-		}
 
+		}
 
 
 
