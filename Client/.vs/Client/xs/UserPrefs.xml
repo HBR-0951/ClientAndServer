@@ -1,15 +1,15 @@
 ﻿<Properties StartupConfiguration="{070D251D-6C3C-401D-9C34-8BE8FA9A21A2}|Default">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.ItemProperties.Client PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workbench ActiveDocument="Client/Client.cs">
     <Files>
       <File FileName="Client/Program.cs" Line="10" Column="23" />
-      <File FileName="Client/Client.cs" Line="141" Column="22" />
+      <File FileName="Client/Client.cs" Line="398" Column="1" />
       <File FileName="../ProtocBuff/Packet/Program.cs" Line="14" Column="13" />
       <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="48" Column="24" />
-      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="109" Column="27" />
+      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="106" Column="27" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
