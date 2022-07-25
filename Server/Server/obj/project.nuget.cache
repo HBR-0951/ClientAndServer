@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iKGUGZhi5CNhSnZsESvbES5Ee/8uf9rL+/knFVUAa9t54gzQ2d4fpvrIHeIqF9PLkuhgSWydrXtXm2pPwlWCSQ==",
+  "dgSpecHash": "zsjqkm/4XVzmctQEofwHBXehKqLQ3ui7+Bhmw5tIDtjjuVqIY0ClKhJovdBpKx48htkxbBBjXbX53M/6O7reBQ==",
   "success": true,
-  "projectFilePath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/Server.csproj",
+  "projectFilePath": "/Users/waylon/Workspace/Fork/cs-architecture/Server/Server/Server.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

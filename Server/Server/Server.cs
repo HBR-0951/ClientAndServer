@@ -6,7 +6,7 @@ using ProtoBuff.Packet;
 
 
 namespace Server {
-    public class Server : TcpServer_Template {
+    public partial class Server : TcpServer_Template {
         private static UInt64 session_id = 0;
         private static int user_id = 0;
 
@@ -35,7 +35,7 @@ namespace Server {
 #pragma warning restore CS8618 // 退出建構函式時，不可為 Null 的欄位必須包含非 Null 值。請考慮宣告為可為 Null。
 
         protected override void OnInitialize() {
-
+            OnInitializeDispatcher();
         }
 
         protected override void OnNewConnection() {

@@ -1,28 +1,20 @@
 ﻿<Properties StartupConfiguration="{84307059-C780-4FF1-99C5-2DCB130FBEA8}|Default">
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Server/User.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Server/Dispacter.cs">
     <Files>
       <File FileName="Server/Program.cs" Line="19" Column="1" />
       <File FileName="Server/TcpServer_Template.cs" Line="71" Column="25" />
       <File FileName="Server/Server.cs" Line="195" Column="17" />
-      <File FileName="Server/User.cs" Line="78" Column="1" />
+      <File FileName="Server/User.cs" Line="7" Column="18" />
       <File FileName="../ProtocBuff/Packet/Program.cs" Line="22" Column="41" />
       <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="125" Column="36" />
       <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="112" Column="39" />
+      <File FileName="Server/Dispacter.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Server" expanded="True">
-            <Node name="Packet" expanded="True" />
-            <Node name="Server" expanded="True">
-              <Node name="Dependencies" expanded="True" />
-            </Node>
+            <Node name="Server" expanded="True" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -31,5 +23,11 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.Server PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
