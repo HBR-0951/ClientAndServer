@@ -96,7 +96,7 @@ namespace Client
                     if (s != null)
                     {
                         Console.WriteLine("send msg");
-                        byte[] bytesPacket = OnBuildPacket(s, 5, 1);
+                        byte[] bytesPacket = OnBuildPacket(s, (int)Service.Forward, 1);
                         Send(bytesPacket);
                     }
 
@@ -212,7 +212,7 @@ namespace Client
 
 				if (m_tcpSocket.Available != 0 || hasOverPacket == true)
 				{
-					Console.WriteLine("aa");
+					
                     if (hasOverPacket)
                     {
 						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
@@ -220,7 +220,7 @@ namespace Client
 						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
 						dataBuffer = tempBuffer;
 						IndexOfBuffer = 0;
-						Console.WriteLine("BufferLength: " + dataBufferLength);
+						
 						hasOverPacket = false;
                     }
                     else
@@ -230,7 +230,7 @@ namespace Client
 						m_tcpSocket.Receive(temp);
 
 						int dataLength = temp.Length;
-						Console.WriteLine("dataLength: " + dataLength);
+						
 						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
 						byte[] tempBuffer = new byte[1024];
 						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
@@ -241,7 +241,7 @@ namespace Client
 
 						dataBufferLength += dataLength;
 
-						Console.WriteLine("BufferLength: " + dataBufferLength);
+						
 
 						IndexOfBuffer = 0;
 					}

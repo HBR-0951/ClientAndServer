@@ -14,7 +14,7 @@ namespace Server {
         protected static UInt64 SID_Generator => session_id++;
         protected static int UID_Generator => user_id++;
 
-        protected new List<User> m_userList = new(10);
+        protected new List<User> m_userList = new();
 
         protected Thread _checkUserisOffLine;
         protected Thread _processingMsg;
@@ -25,16 +25,21 @@ namespace Server {
 
         // MQ
         public MQ mq;
+        public static Queue<byte[]> MQ_Queue = new Queue<byte[]>();
+        protected Thread _queueEvent;
+      
+
 
 #pragma warning disable CS8618 // 退出建構函式時，不可為 Null 的欄位必須包含非 Null 值。請考慮宣告為可為 Null。
         public Server(string name) : base(name) {
             _checkUserisOffLine = new Thread(checkUserOffLine);
-            //_processingMsg = new Thread(ProcessMessage);
+            _queueEvent = new Thread(OnQueueEventHandler);
             OnInitialize();
         }
 #pragma warning restore CS8618 // 退出建構函式時，不可為 Null 的欄位必須包含非 Null 值。請考慮宣告為可為 Null。
 
         protected override void OnInitialize() {
+            OnInitializeServices();
             OnInitializeDispatcher();
         }
 
@@ -58,7 +63,7 @@ namespace Server {
                         //// 加上packet事件處理方法
                         //user.PacketEvent += OnUserPacketEventHandler;
                         // 加上packet MQ 方法
-                        user.PacketMQEvent += OnPacketMQ;
+                        //user.PacketMQEvent += OnPacketMQ;
 
                         DateTime localtime = DateTime.Now;
                         string msg = $"[ Time: {localtime} ]  Connect to [ Target IP:{m_tcpSocket.RemoteEndPoint} ] Successful : [ User_id: {uid} ]";
@@ -85,9 +90,10 @@ namespace Server {
             
 
             _checkUserisOffLine.Start(); // 檢查client 有無斷線
-            // 訂閱MQ
-            mq = new MQ(this.Name);
-            mq.PacketEvent += OnUserPacketEventHandler;
+            _queueEvent.Start();
+            //// 訂閱MQ
+            //mq = new MQ(this.Name);
+            //mq.PacketEvent += OnUserPacketEventHandler;
             
             
 
@@ -119,16 +125,6 @@ namespace Server {
 
         }
 
-        //// 廣播
-        //public void OnBroadcast(string msg) {
-            
-        //    Console.WriteLine("BroadCast: " + msg);
-
-        //    foreach (var user in m_userList) {
-        //        Console.WriteLine("1");
-        //        user.Send(msg);
-        //    }
-        //}
 
         protected void checkUserOffLine()
         {
@@ -151,77 +147,99 @@ namespace Server {
             }
         }
 
-
-        //處理packet的event
-        public void OnUserPacketEventHandler(SamplePacket receivedPacket)
+        protected void OnQueueEventHandler()
         {
-            var target_id = receivedPacket.TargetID;
-            int sender_id = receivedPacket.SenderID;
-            string msg = receivedPacket.Message;
-            int function = receivedPacket.Function;
-            var packetLength = receivedPacket.SizeOfPacket;
-
-            //Console.WriteLine(receivePacket.ToString());
-            //        Console.WriteLine("\ntargetid: " + targetid
-            //                        + "\nsenderid: " + sendid
-            //                        + "\nfunction: " + function
-            //+ "\npacketLength: " + packetLength
-            //+ "\nmsg: " + msg);
-            switch (function)
+            while (!isCloseServer)
             {
-                case 2: // server 轉發
-                    bool hasSend = false;
-                    foreach (var user in m_userList)
-                    {
-                        if (target_id != sender_id && target_id == user.user_ID)
-                        {
-                            var bytesPacket = user.OnBuildPacket(msg, function, target_id);
-                            user.Send(bytesPacket);
-                            hasSend = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!hasSend)
-                    {
-                        string s = "Can't find target user";
-                        foreach (var user in m_userList)
-                        {
-                            if (user.user_ID == sender_id)
-                            {
-                                byte[] data = user.OnBuildPacket(s, 4, sender_id);
-                                user.Send(data);
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                case 3: // client傳給server
-                    var senderid = receivedPacket.SenderID;
-                    Console.WriteLine("Server get msg from user[ " + senderid + " ]: " + msg);
-                    break;
-                case 5: // 群發
-                    foreach (var user in m_userList)
-                    {
-                        if (user.user_ID != sender_id)
-                        {
-                            var bytesPacket = user.OnBuildPacket(msg, function, target_id);
-                            user.Send(bytesPacket);
-                            continue;
-                        }
-                    }
-                    break;
-                default:
-                    break;
+                // 假設queue裡有packet
+                if(MQ_Queue.Count != 0)
+                {
+                    byte[] bytesPacket = MQ_Queue.Dequeue();
+                    SamplePacket packet = new SamplePacket();
+                    packet.UnPack(bytesPacket);
+
+                    string service = Services[packet.Function];
+                    m_cmdDispatcher.Dispatch(service, bytesPacket);
+                }
+                Thread.Sleep(100);
             }
+        }
+
+        protected void QueuePop()
+        {
 
         }
+
+        ////處理packet的event
+        //public void OnUserPacketEventHandler(SamplePacket receivedPacket)
+        //{
+        //    var target_id = receivedPacket.TargetID;
+        //    int sender_id = receivedPacket.SenderID;
+        //    string msg = receivedPacket.Message;
+        //    int function = receivedPacket.Function;
+        //    var packetLength = receivedPacket.SizeOfPacket;
+
+        //    //Console.WriteLine(receivePacket.ToString());
+        //    //        Console.WriteLine("\ntargetid: " + targetid
+        //    //                        + "\nsenderid: " + sendid
+        //    //                        + "\nfunction: " + function
+        //    //+ "\npacketLength: " + packetLength
+        //    //+ "\nmsg: " + msg);
+        //    switch (function)
+        //    {
+        //        case 2: // server 轉發
+        //            bool hasSend = false;
+        //            foreach (var user in m_userList)
+        //            {
+        //                if (target_id != sender_id && target_id == user.user_ID)
+        //                {
+        //                    var bytesPacket = user.OnBuildPacket(msg, function, target_id);
+        //                    user.Send(bytesPacket);
+        //                    hasSend = true;
+        //                    break;
+        //                }
+        //            }
+                    
+        //            if (!hasSend)
+        //            {
+        //                string s = "Can't find target user";
+        //                foreach (var user in m_userList)
+        //                {
+        //                    if (user.user_ID == sender_id)
+        //                    {
+        //                        byte[] data = user.OnBuildPacket(s, 4, sender_id);
+        //                        user.Send(data);
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //            break;
+        //        case 3: // client傳給server
+        //            var senderid = receivedPacket.SenderID;
+        //            Console.WriteLine("Server get msg from user[ " + senderid + " ]: " + msg);
+        //            break;
+        //        case 5: // 群發
+        //            foreach (var user in m_userList)
+        //            {
+        //                if (user.user_ID != sender_id)
+        //                {
+        //                    var bytesPacket = user.OnBuildPacket(msg, function, target_id);
+        //                    user.Send(bytesPacket);
+        //                    continue;
+        //                }
+        //            }
+        //            break;
+        //        default:
+        //            break;
+        //    }
+
+        //}
 
         // push packet in Queue
-        public void OnPacketMQ(SamplePacket packet)
-        {
-            mq.push(this.Name, packet);
-        }
+        //public void OnPacketMQ(SamplePacket packet)
+        //{
+        //    mq.push(this.Name, packet);
+        //}
     }
 }
 

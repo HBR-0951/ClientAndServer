@@ -6,6 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProtoBuff.Packet {
+
+    public enum Service : int
+    {
+        SendUserID = 1,
+        Forward = 2,
+        ClientToServer = 3,
+        ServerToClient = 4,
+        Bulk = 5
+    }
+
+
     public class SamplePacket : Packet_Template {
 
         public string Message {
@@ -23,8 +34,7 @@ namespace ProtoBuff.Packet {
         public int TargetID { get; set; }
 
         /// <summary>
-        /// 封包要做的動作: 0: 傳送空封包,
-        ///              1: 傳送userID給client
+        /// 封包要做的動作: 1: 傳送userID給client
         ///              2: server轉發,
         ///              3: 給server,
         ///              4: server 給 client,
@@ -33,6 +43,9 @@ namespace ProtoBuff.Packet {
         ///              
         /// </summary>
         public int Function { get; set; }
+
+   
+        
 
         /// <summary>
         /// 自己的user_id

@@ -30,8 +30,8 @@ namespace Server {
 
 
 		// MQ
-		public delegate void PacketMQ(SamplePacket packet);
-		public event PacketMQ PacketMQEvent;
+		//public delegate void PacketMQ(SamplePacket packet);
+		//public event PacketMQ PacketMQEvent;
 
 		public bool IsConnected {
 			get => m_tcpSocket.Connected;
@@ -74,12 +74,15 @@ namespace Server {
 			// 服務器 及 客戶端 還處於接受連線狀態時，無限迴圈 -> 等待接受客戶端資料
 			while (IsConnected)
 			{
-				var packet = OnUnPack();
+#pragma warning disable CS8600 // 正在將 Null 常值或可能的 Null 值轉換為不可為 Null 的型別。
+                byte[] packet = OnUnPack();
+#pragma warning restore CS8600 // 正在將 Null 常值或可能的 Null 值轉換為不可為 Null 的型別。
 
-				if (packet!= null)
+                if (packet!= null)
                 {
-                    // 呼叫PacketMQ event，存放queue
-                    this.OnPacketMQ(packet);
+					Server.MQ_Queue.Enqueue(packet);
+                    //// 呼叫PacketMQ event，存放queue
+                    //this.OnPacketMQ(packet);
 				}
 
 			}
@@ -92,11 +95,11 @@ namespace Server {
 
 
 		// new 解封包 
-		public SamplePacket OnUnPack()
+		public byte[]? OnUnPack()
 		{
 			bool hasPcketLength = false;
 			byte[] fullPacket;
-			SamplePacket aFullPacket = new SamplePacket();
+			
 			int packetLength = 0;
 
 
@@ -176,13 +179,13 @@ namespace Server {
 							fullPacket = SamplePacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
 							IndexOfBuffer += packetLength;
 							dataBufferLength -= packetLength;
-							aFullPacket.UnPack(fullPacket);
+							
 
 							if (dataBufferLength > 0)
 							{
 								hasOverPacket = true;
 							}
-							return aFullPacket;
+							return fullPacket;
 						}
 						else
 						{
@@ -281,13 +284,13 @@ namespace Server {
 
 
 		
-		private void OnPacketMQ(SamplePacket packet)
-		{
-			if(PacketMQEvent != null)
-			{
-				PacketMQEvent.Invoke(packet);
-			}
-		}
+		//private void OnPacketMQ(SamplePacket packet)
+		//{
+		//	if(PacketMQEvent != null)
+		//	{
+		//		PacketMQEvent.Invoke(packet);
+		//	}
+		//}
 	}
 }
 

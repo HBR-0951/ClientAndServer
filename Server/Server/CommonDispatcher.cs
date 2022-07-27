@@ -28,7 +28,7 @@ namespace Server {
             // 判斷是否已註冊
             if (m_disp.ContainsKey(type) == true) {
                 // 嘗試獲取字典內容
-                if (m_disp.TryGetValue(type, out PacketHandler packetHandler)) {
+                if (m_disp.TryGetValue(type, out var packetHandler)) {
                     packetHandler.Invoke(bytesPacket); // 執行 Callback
 
                 } else {

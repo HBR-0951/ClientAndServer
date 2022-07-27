@@ -122,6 +122,7 @@ namespace ProtoBuff.Packet
 
             } catch (Exception e) {
                 // Print Error
+                Console.WriteLine(e.Message);
                 return new byte[0];
             }
         }
