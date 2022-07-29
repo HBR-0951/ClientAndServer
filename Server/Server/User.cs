@@ -26,6 +26,7 @@ namespace Server {
 		protected byte[] dataBuffer = new byte[1024];
 		protected int IndexOfBuffer = 0;
 		protected int dataBufferLength = 0;
+		protected int serviceID;
 		
 
 
@@ -52,13 +53,14 @@ namespace Server {
 			PacketReceivedThread.Start();
 
 			string msg = $"Connect to [ Target IP:{m_tcpSocket.RemoteEndPoint} ] Successful : [ User_id: {this.user_ID} ]";
-			byte[] bytesPacket = OnBuildPacket(msg, 4, this.user_ID);
+			serviceID = (int)ProtoBuff.Packet.Type.ServerToClient;
+			byte[] bytesPacket = OnBuildPacket(msg, serviceID, this.user_ID);
 			Send(bytesPacket);
 			//Thread.Sleep(100);
 			// 傳給client自己的userID
 			string userid = this.user_ID.ToString();
-
-			byte[] data = OnBuildPacket(userid, 1, this.user_ID);
+			serviceID = (int)ProtoBuff.Packet.Type.SendUserID;
+			byte[] data = OnBuildPacket(userid, serviceID, this.user_ID);
 			Send(data);
 			Console.WriteLine("has send user");
 		}
@@ -81,8 +83,7 @@ namespace Server {
                 if (packet!= null)
                 {
 					Server.MQ_Queue.Enqueue(packet);
-                    //// 呼叫PacketMQ event，存放queue
-                    //this.OnPacketMQ(packet);
+                    
 				}
 
 			}

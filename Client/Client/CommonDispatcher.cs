@@ -1,5 +1,6 @@
 ﻿using System;
-namespace Server {
+
+namespace Client {
 
     // 一般分配器
     public class CommonDispatcher {
@@ -38,6 +39,7 @@ namespace Server {
 
             } else {
                 // type未註冊
+                Console.WriteLine("2");
                 Console.WriteLine($"[Warning] Type is not Registed : type: {type}");
             }
         }

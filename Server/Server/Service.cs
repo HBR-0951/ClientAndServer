@@ -7,17 +7,6 @@ namespace Server {
 
 		protected CommonDispatcher m_cmdDispatcher = new();
 
-		public static Dictionary<int, string> Services = new();
-
-		protected void OnInitializeServices()
-        {
-			Services.Add(1, "SendUserID");
-			Services.Add(2, "Forward");
-			Services.Add(3, "ClientToServer");
-			Services.Add(4, "ServerToClient");
-			Services.Add(5, "Bulk");
-		}
-		
 
 		protected void OnInitializeDispatcher() {
 
@@ -25,9 +14,9 @@ namespace Server {
 			// 註冊 Demo方法
 			m_cmdDispatcher.Register("Forward", Forward); 
 			m_cmdDispatcher.Register("Bulk", Bulk);
-			m_cmdDispatcher.Register("ClientToServer", ClientToServer);
+			m_cmdDispatcher.Register("ClientToServer_Ack", ClientToServer_Ack);
 
-			m_cmdDispatcher.ToString();
+			//m_cmdDispatcher.ToString();
 		}
 
 		// 轉發
@@ -97,7 +86,7 @@ namespace Server {
         }
 
 		// client to server
-		protected void ClientToServer(byte[] bytesPacket)
+		protected void ClientToServer_Ack(byte[] bytesPacket)
         {
 			SamplePacket receivedPacket = new SamplePacket();
 			receivedPacket.UnPack(bytesPacket);

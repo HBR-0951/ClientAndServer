@@ -6,7 +6,7 @@ using ProtoBuff.Packet;
 
 namespace Client
 {
-	public class Client
+	public partial class Client
 	{
 		protected Socket? m_tcpSocket;
 
@@ -32,11 +32,13 @@ namespace Client
 		protected int dataBufferLength = 0;
 		protected bool hasOverPacket = false;
 
-
+		// MQ
+		public static Queue<byte[]> MQ_Queue = new Queue<byte[]>();
+		protected Thread _queueEvent;
 
 		public string Name { get; set; } = "N/A";
 
-		public bool ISConnected
+		public bool IsConnected
 		{
 			get => m_tcpSocket != null && m_tcpSocket.Connected;
 		}
@@ -46,24 +48,31 @@ namespace Client
 			Name = name;
 			_awaitServer = new Thread(OnPacketReceived);
 			_sendPacket = new Thread(OnSendPacket);
+			_queueEvent = new Thread(OnQueueEventHandler);
 
 			m_tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+			OnInitialize();
 
+		}
+
+		protected void OnInitialize()
+        {
+			OnInitializeDispatcher();
 		}
 
 		protected void OnPacketReceived()
 		{
 
 
-			while (ISConnected)
+			while (IsConnected)
 			{
 
 				var packet = OnUnPack();
 
 				if (packet != null)
 				{
-					PacketEvent(packet);
+					MQ_Queue.Enqueue(packet);
 				}
 				else
 				{
@@ -85,7 +94,7 @@ namespace Client
 		// 等待接收要傳送的訊息(Thread)
 		protected void OnSendPacket()
 		{
-			while (m_tcpSocket.Connected)
+			while (IsConnected)
 			{
 				try
 				{
@@ -96,7 +105,8 @@ namespace Client
                     if (s != null)
                     {
                         Console.WriteLine("send msg");
-                        byte[] bytesPacket = OnBuildPacket(s, (int)Service.Forward, 1);
+						int serviceID = (int)ProtoBuff.Packet.Type.Forward;
+                        byte[] bytesPacket = OnBuildPacket(s, serviceID, 1);
                         Send(bytesPacket);
                     }
 
@@ -138,10 +148,11 @@ namespace Client
 
 		public void OnClosed()
 		{
-			_awaitServer.Interrupt(); // Thread.Abort()過時
-			_sendPacket.Interrupt();
-			m_tcpSocket.Close();
-			Console.WriteLine("Client has closed.");
+
+#pragma warning disable CS8602 // 可能 null 參考的取值 (dereference)。
+            m_tcpSocket.Close();
+#pragma warning restore CS8602 // 可能 null 參考的取值 (dereference)。
+            Console.WriteLine("Client has closed.");
 		}
 
 		public void OnStart()
@@ -152,6 +163,7 @@ namespace Client
 				Console.WriteLine("Connect");
 				_awaitServer.Start();
 				_sendPacket.Start();
+				_queueEvent.Start();
 				
 			}
 			catch (SocketException e)
@@ -199,38 +211,35 @@ namespace Client
 		}
 
 		// new 解封包 
-		public SamplePacket OnUnPack()
+		public byte[]? OnUnPack()
 		{
 			bool hasPcketLength = false;
 			byte[] fullPacket;
-			SamplePacket aFullPacket = new SamplePacket();
+
 			int packetLength = 0;
 
 
-			while (ISConnected)
+			while (IsConnected)
 			{
 
 				if (m_tcpSocket.Available != 0 || hasOverPacket == true)
 				{
-					
-                    if (hasOverPacket)
-                    {
+					if (hasOverPacket)
+					{
 						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
 						byte[] tempBuffer = new byte[1024];
 						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
 						dataBuffer = tempBuffer;
 						IndexOfBuffer = 0;
-						
 						hasOverPacket = false;
-                    }
-                    else
-                    {
+					}
+					else
+					{
 						// Put all receiveData in dataBuffer
 						byte[] temp = new byte[m_tcpSocket.Available];
 						m_tcpSocket.Receive(temp);
 
 						int dataLength = temp.Length;
-						
 						// 宣告一個新的空byte[]來讓dataBuffer覆蓋，以免他超出範圍
 						byte[] tempBuffer = new byte[1024];
 						Array.Copy(dataBuffer, IndexOfBuffer, tempBuffer, 0, dataBufferLength);
@@ -241,11 +250,10 @@ namespace Client
 
 						dataBufferLength += dataLength;
 
-						
 
 						IndexOfBuffer = 0;
 					}
-					
+
 
 
 
@@ -268,7 +276,7 @@ namespace Client
 							dataBufferLength -= 4;
 							packetLength = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(tempLength, 0));
 							hasPcketLength = true;
-					
+
 						}
 					}
 
@@ -283,17 +291,17 @@ namespace Client
 						// 假設長度符合
 						if (dataBufferLength >= packetLength)
 						{
-							
+
 							fullPacket = SamplePacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
 							IndexOfBuffer += packetLength;
 							dataBufferLength -= packetLength;
-							aFullPacket.UnPack(fullPacket);
 
-							if(dataBufferLength > 0)
-                            {
+
+							if (dataBufferLength > 0)
+							{
 								hasOverPacket = true;
-                            }
-							return aFullPacket;
+							}
+							return fullPacket;
 						}
 						else
 						{
@@ -317,46 +325,67 @@ namespace Client
 
 		}
 
-		protected void PacketEvent(SamplePacket packet)
-        {
-			var target_id = packet.TargetID;
-			int sender_id = packet.SenderID;
-			string msg = packet.Message;
-			int function = packet.Function;
-			var packetLength = packet.SizeOfPacket;
-
-			//Console.WriteLine(receivePacket.ToString());
-			//        Console.WriteLine("\ntargetid: " + targetid
-			//                        + "\nsenderid: " + sendid
-			//                        + "\nfunction: " + function
-			//+ "\npacketLength: " + packetLength
-			//+ "\nmsg: " + msg);
-			switch (function)
+		protected void OnQueueEventHandler()
+		{
+			while (IsConnected)
 			{
-				case 1: // 得到user_id
-					this.user_id = Int32.Parse(msg);
-					Console.WriteLine("Client get userid: " + this.user_id);
-					hasGetUserID = true;
-					break;
-				case 2: // server 轉發
-					Console.WriteLine("target_id: " + target_id);
-					Console.WriteLine("user_id: " + this.user_id);
-					if (target_id == this.user_id)
-					{
-						Console.WriteLine("Client get msg: " + msg);
-					}
-					else
-					{
-						Console.WriteLine("The msg is sent to wrong place");
-					}
-					break;
-				case 4: // server 傳給 client
-					Console.WriteLine("Server send msg: " + msg);
-					break;
-				default:
-					break;
+				// 假設queue裡有packet
+				if (MQ_Queue.Count != 0)
+				{
+					byte[] bytesPacket = MQ_Queue.Dequeue();
+					SamplePacket packet = new SamplePacket();
+					packet.UnPack(bytesPacket);
+
+					
+
+					string service = ((ProtoBuff.Packet.Type)(packet.Function)).ToString();
+
+					m_cmdDispatcher.Dispatch(service, bytesPacket);
+				}
+				Thread.Sleep(100);
 			}
 		}
+
+		//protected void PacketEvent(SamplePacket packet)
+		//      {
+		//	var target_id = packet.TargetID;
+		//	int sender_id = packet.SenderID;
+		//	string msg = packet.Message;
+		//	int function = packet.Function;
+		//	var packetLength = packet.SizeOfPacket;
+
+		//	//Console.WriteLine(receivePacket.ToString());
+		//	//        Console.WriteLine("\ntargetid: " + targetid
+		//	//                        + "\nsenderid: " + sendid
+		//	//                        + "\nfunction: " + function
+		//	//+ "\npacketLength: " + packetLength
+		//	//+ "\nmsg: " + msg);
+		//	switch (function)
+		//	{
+		//		case 1: // 得到user_id
+		//			this.user_id = Int32.Parse(msg);
+		//			Console.WriteLine("Client get userid: " + this.user_id);
+		//			hasGetUserID = true;
+		//			break;
+		//		case 2: // server 轉發
+		//			Console.WriteLine("target_id: " + target_id);
+		//			Console.WriteLine("user_id: " + this.user_id);
+		//			if (target_id == this.user_id)
+		//			{
+		//				Console.WriteLine("Client get msg: " + msg);
+		//			}
+		//			else
+		//			{
+		//				Console.WriteLine("The msg is sent to wrong place");
+		//			}
+		//			break;
+		//		case 4: // server 傳給 client
+		//			Console.WriteLine("Server send msg: " + msg);
+		//			break;
+		//		default:
+		//			break;
+		//	}
+		//}
 
 
 	}

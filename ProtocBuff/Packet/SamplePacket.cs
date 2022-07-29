@@ -7,13 +7,21 @@ using System.Threading.Tasks;
 
 namespace ProtoBuff.Packet {
 
-    public enum Service : int
+    public enum Type
     {
-        SendUserID = 1,
-        Forward = 2,
-        ClientToServer = 3,
-        ServerToClient = 4,
-        Bulk = 5
+        None = 0,
+        SendUserID,
+        SendUserID_Ack,
+        Forward,
+        Forward_Ack,
+        ClientToServer,
+        ClientToServer_Ack,
+        ServerToClient,
+        ServerToClient_Ack,
+        Bulk,
+        Bulk_Ack,
+
+        Size
     }
 
 
