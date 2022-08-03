@@ -1,24 +1,26 @@
 ﻿<Properties StartupConfiguration="{070D251D-6C3C-401D-9C34-8BE8FA9A21A2}|Default">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Client PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.ItemProperties.Client PreferredExecutionTarget="MonoDevelop.Default" />
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Client/Client.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Client/Program.cs">
     <Files>
-      <File FileName="Client/Program.cs" Line="10" Column="23" />
-      <File FileName="Client/Client.cs" Line="1" Column="1" />
+      <File FileName="Client/Program.cs" Line="8" Column="27" />
+      <File FileName="Client/Client.cs" Line="334" Column="4" />
       <File FileName="../ProtocBuff/Packet/Program.cs" Line="14" Column="13" />
       <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="48" Column="24" />
-      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="106" Column="22" />
+      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="14" Column="24" />
+      <File FileName="Client/CommonDispatcher.cs" Line="40" Column="21" />
+      <File FileName="Client/Service.cs" Line="21" Column="4" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Client" expanded="True">
-            <Node name="Client" expanded="True" />
+            <Node name="Client" expanded="True">
+              <Node name="Program.cs" selected="True" />
+            </Node>
             <Node name="Packet" expanded="True" />
           </Node>
         </State>
@@ -28,4 +30,6 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>

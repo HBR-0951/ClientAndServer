@@ -3,17 +3,18 @@
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Server/User.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Server/Server.cs">
     <Files>
       <File FileName="Server/Program.cs" Line="19" Column="1" />
       <File FileName="Server/TcpServer_Template.cs" Line="71" Column="25" />
-      <File FileName="Server/Server.cs" Line="205" Column="1" />
-      <File FileName="Server/User.cs" Line="60" Column="1" />
+      <File FileName="Server/Server.cs" Line="157" Column="14" />
+      <File FileName="Server/User.cs" Line="108" Column="5" />
       <File FileName="../ProtocBuff/Packet/Program.cs" Line="22" Column="41" />
-      <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="125" Column="36" />
-      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="112" Column="39" />
+      <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="125" Column="46" />
+      <File FileName="../ProtocBuff/Packet/SamplePacket.cs" Line="15" Column="17" />
+      <File FileName="Server/CommonDispatcher.cs" Line="39" Column="21" />
+      <File FileName="Server/MQ.cs" Line="14" Column="49" />
+      <File FileName="Server/Service.cs" Line="89" Column="36" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -22,6 +23,7 @@
             <Node name="Packet" expanded="True" />
             <Node name="Server" expanded="True">
               <Node name="Dependencies" expanded="True" />
+              <Node name="Server.cs" selected="True" />
             </Node>
           </Node>
         </State>
@@ -32,4 +34,6 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.Server PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
 </Properties>
