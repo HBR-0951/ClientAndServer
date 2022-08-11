@@ -11,7 +11,7 @@ namespace Server
 			Node temp = new Node();
 			temp.Name = serverName;
 			temp.Type = "123";
-			temp.packetQueue = new Queue<SamplePacket>();
+			temp.packetQueue = new Queue<MsgPacket>();
 
 			Queues.Add(temp);
 
@@ -23,7 +23,7 @@ namespace Server
 		protected Thread? _msgObserver;
 		public List<Node> Queues = new();
 
-		public delegate void PacketHandler(SamplePacket packet);
+		public delegate void PacketHandler(MsgPacket packet);
 		public event PacketHandler PacketEvent;
 
 		public bool isClose = false;
@@ -32,12 +32,12 @@ namespace Server
 		{
 			public string Name { get; set; }
 			public string Type { get; set; }
-			public Queue<SamplePacket> packetQueue { get; set; }
+			public Queue<MsgPacket> packetQueue { get; set; }
 		}
 
 		
 
-		public void push(string serverName, SamplePacket packet) {
+		public void push(string serverName, MsgPacket packet) {
 			foreach(var node in Queues)
             {
 				if(node.Name == serverName)
@@ -47,8 +47,8 @@ namespace Server
                 }
             }
 		}
-		public SamplePacket pop(Node node) {
-			SamplePacket packet = node.packetQueue.Dequeue();
+		public MsgPacket pop(Node node) {
+			MsgPacket packet = node.packetQueue.Dequeue();
 
 			return packet;
 		}
@@ -84,7 +84,7 @@ namespace Server
             }
 		}
 
-		public void OnPacket(SamplePacket packet)
+		public void OnPacket(MsgPacket packet)
         {
 			if(PacketEvent != null)
             {

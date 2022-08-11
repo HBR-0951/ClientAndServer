@@ -38,6 +38,9 @@ namespace Server {
 			get => m_tcpSocket.Connected;
 		}
 
+		// Login
+		protected Thread m_CheckLogin;
+
 		//public delegate void PacketHandler(byte[] bytesPacket);
 
 		//public event PacketHandler PacketEvent;
@@ -56,13 +59,13 @@ namespace Server {
 			serviceID = (int)ProtoBuff.Packet.Type.ServerToClient;
 			byte[] bytesPacket = OnBuildPacket(msg, serviceID, this.user_ID);
 			Send(bytesPacket);
-			//Thread.Sleep(100);
+
 			// 傳給client自己的userID
 			string userid = this.user_ID.ToString();
 			serviceID = (int)ProtoBuff.Packet.Type.SendUserID;
 			byte[] data = OnBuildPacket(userid, serviceID, this.user_ID);
 			Send(data);
-			Console.WriteLine("has send user");
+			Console.WriteLine("has send user");			
 		}
 #pragma warning restore CS8618 // 退出建構函式時，不可為 Null 的欄位必須包含非 Null 值。請考慮宣告為可為 Null。
 
@@ -156,7 +159,7 @@ namespace Server {
 						}
 						else
 						{
-							byte[] tempLength = SamplePacket.Extract(dataBuffer, IndexOfBuffer, 4);
+							byte[] tempLength = MsgPacket.Extract(dataBuffer, IndexOfBuffer, 4);
 							IndexOfBuffer += 4;
 							dataBufferLength -= 4;
 							packetLength = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(tempLength, 0));
@@ -177,7 +180,7 @@ namespace Server {
 						if (dataBufferLength >= packetLength)
 						{
 
-							fullPacket = SamplePacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
+							fullPacket = MsgPacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
 							IndexOfBuffer += packetLength;
 							dataBufferLength -= packetLength;
 							
@@ -259,7 +262,7 @@ namespace Server {
 		/// </summary>
 		public byte[] OnBuildPacket(string msg, int function, int target_id)
 		{
-			var packet = new SamplePacket();
+			var packet = new MsgPacket();
 			packet.ID = 123;
 			packet.Code = 0;
 			packet.TargetID = target_id;
@@ -285,13 +288,7 @@ namespace Server {
 
 
 		
-		//private void OnPacketMQ(SamplePacket packet)
-		//{
-		//	if(PacketMQEvent != null)
-		//	{
-		//		PacketMQEvent.Invoke(packet);
-		//	}
-		//}
+	
 	}
 }
 

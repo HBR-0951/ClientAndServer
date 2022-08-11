@@ -10,7 +10,7 @@ namespace ProtoBuff
         static void Main(string[] args) {
 
             // 發送者
-            var packet = new SamplePacket();
+            var packet = new MsgPacket();
             packet.ID = 123;
             packet.Code = 0;
             packet.TargetID = 1;
@@ -23,7 +23,7 @@ namespace ProtoBuff
 
             // 接收者
             // Remote Received Packet
-            var receivedPacket = new SamplePacket();
+            var receivedPacket = new MsgPacket();
             receivedPacket.UnPack(bytesPacket);
             var sid = receivedPacket.Message;
             var infos = receivedPacket.ToString(); // 顯示封包内容

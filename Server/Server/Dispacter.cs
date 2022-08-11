@@ -3,7 +3,7 @@ using ProtoBuff.Packet;
 
 namespace Server
 {
-	public delegate void MsgHandler(SamplePacket pack);
+	public delegate void MsgHandler(MsgPacket pack);
 
 	public class Dispacter
 	{
@@ -26,7 +26,7 @@ namespace Server
             }
 		}
 
-		public bool Dispatch (string key, SamplePacket packet)
+		public bool Dispatch (string key, MsgPacket packet)
         {
 			// 假設key存在 dictionary 裡
             if (m_disp.ContainsKey(key))

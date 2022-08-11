@@ -20,7 +20,7 @@ namespace Server
 
         protected Thread _checkUserisOffLine;
         protected Thread _processingMsg;
-
+         
 
         protected bool isCloseServer = false;
 
@@ -29,6 +29,9 @@ namespace Server
         public MQ mq;
         public static Queue<byte[]> MQ_Queue = new Queue<byte[]>();
         protected Thread _queueEvent;
+
+        // MySqlDB
+        protected TestDB mySqlDB = new TestDB();
 
 
 
@@ -93,6 +96,8 @@ namespace Server
         {
             m_tcpSocket.Listen(Backlog); // 開始監聽目標ip位址
 
+          
+
             if (_awaitClient != null)
             {
                 _awaitClient.Start(); // 啟動等待客戶端連線執行緒
@@ -101,6 +106,8 @@ namespace Server
 
             _checkUserisOffLine.Start(); // 檢查client 有無斷線
             _queueEvent.Start();
+            mySqlDB.OnStart();
+
             //// 訂閱MQ
             //mq = new MQ(this.Name);
             //mq.PacketEvent += OnUserPacketEventHandler;
@@ -164,11 +171,15 @@ namespace Server
                 // 假設queue裡有packet
                 if (MQ_Queue.Count != 0)
                 {
+                    //pop
                     byte[] bytesPacket = MQ_Queue.Dequeue();
-                    SamplePacket packet = new SamplePacket();
+                    Packet_Template packet = new Packet_Template();
                     packet.UnPack(bytesPacket);
 
+                    
+
                     string service = ((ProtoBuff.Packet.Type)packet.Function).ToString();
+              
 
                     m_cmdDispatcher.Dispatch(service, bytesPacket);
                 }

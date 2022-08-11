@@ -20,12 +20,14 @@ namespace ProtoBuff.Packet {
         ServerToClient_Ack,
         Bulk,
         Bulk_Ack,
+        Login,
+        Login_Ack,
 
         Size
     }
 
 
-    public class SamplePacket : Packet_Template {
+    public class MsgPacket : Packet_Template {
 
         public string Message {
             get {
@@ -37,23 +39,20 @@ namespace ProtoBuff.Packet {
         }
 
         /// <summary>
+        /// 封包内容
+        /// </summary>
+        protected byte[]? m_data = null;
+
+        /// <summary>
+        /// 封包内容大小
+        /// </summary>
+        protected int m_dataSize;
+
+        /// <summary>
         /// 目標user_id: -1: 伺服器
         /// </summary>
         public int TargetID { get; set; }
 
-        /// <summary>
-        /// 封包要做的動作: 1: 傳送userID給client
-        ///              2: server轉發,
-        ///              3: 給server,
-        ///              4: server 給 client,
-        ///              5: 群發
-        ///              
-        ///              
-        /// </summary>
-        public int Function { get; set; }
-
-   
-        
 
         /// <summary>
         /// 自己的user_id
@@ -67,11 +66,11 @@ namespace ProtoBuff.Packet {
         /// </summary>
         public new const int IndexOf_ID = 0;
         public new const int IndexOf_Code = IndexOf_ID + sizeof(int); // ID的型別是int，int 大小為 4
-        public const int IndexOf_Function = IndexOf_Code + sizeof(int); // new
+        public new const int IndexOf_Function = IndexOf_Code + sizeof(int); // new
         public const int IndexOf_TargetID = IndexOf_Function + sizeof(int); // new
         public const int IndexOf_SenderID = IndexOf_TargetID + sizeof(int); // new
-        public new const int IndexOf_dataSize = IndexOf_SenderID + sizeof(int);
-        public new const int IndexOf_Data = IndexOf_dataSize + sizeof(int);
+        public const int IndexOf_dataSize = IndexOf_SenderID + sizeof(int);
+        public const int IndexOf_Data = IndexOf_dataSize + sizeof(int);
 
 
 
@@ -84,14 +83,6 @@ namespace ProtoBuff.Packet {
 
             //指定封包尺寸
             var bytesPacket = new byte[SizeOfPacket];
-            //Console.WriteLine(IndexOf_ID);
-            //Console.WriteLine(IndexOf_Code);
-
-            //Console.WriteLine(IndexOf_TargetID);
-            //Console.WriteLine(IndexOf_dataSize);
-            //Console.WriteLine(IndexOf_Data);
-            //Console.WriteLine(m_data.Length);
-            //Console.WriteLine(SizeOfPacket);
 
 
             System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(ID)).CopyTo(bytesPacket, IndexOf_ID);

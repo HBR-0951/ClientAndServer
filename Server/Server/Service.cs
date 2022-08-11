@@ -15,13 +15,14 @@ namespace Server {
 			m_cmdDispatcher.Register("Forward", Forward); 
 			m_cmdDispatcher.Register("Bulk", Bulk);
 			m_cmdDispatcher.Register("ClientToServer_Ack", ClientToServer_Ack);
+			m_cmdDispatcher.Register("Login", Login);
 
 			//m_cmdDispatcher.ToString();
 		}
 
 		// 轉發
 		protected void Forward(byte[] bytesPacket) {
-			SamplePacket receivedPacket = new SamplePacket();
+			MsgPacket receivedPacket = new MsgPacket();
 			receivedPacket.UnPack(bytesPacket);
 
 			bool hasSend = false;
@@ -64,7 +65,7 @@ namespace Server {
 		//群發
 		protected void Bulk(byte[] bytesPacket)
         {
-			SamplePacket receivedPacket = new SamplePacket();
+			MsgPacket receivedPacket = new MsgPacket();
 			receivedPacket.UnPack(bytesPacket);
 
 			var target_id = receivedPacket.TargetID;
@@ -88,13 +89,43 @@ namespace Server {
 		// client to server
 		protected void ClientToServer_Ack(byte[] bytesPacket)
         {
-			SamplePacket receivedPacket = new SamplePacket();
+			MsgPacket receivedPacket = new MsgPacket();
 			receivedPacket.UnPack(bytesPacket);
 
 			var senderid = receivedPacket.SenderID;
 			var msg = receivedPacket.Message;
 
             Console.WriteLine("Server get msg from user[ " + senderid + " ]: " + msg);
+		}
+
+		// 得到 Login 的登入要求後
+		protected void Login(byte[] bytesPacket)
+        {
+			LoginPacket receivePacket = new LoginPacket();
+			receivePacket.UnPack(bytesPacket);
+
+			string id = receivePacket.LoginID;
+			string password = receivePacket.LoginPsd;
+			int sender_id = receivePacket.SenderID;
+
+			Console.WriteLine(receivePacket.ToString());
+			
+			// 判斷登入是否成功，決定傳送的訊息
+			string msg = mySqlDB.UserLogin(id, password) ? "Success" : "Fail to Login";
+
+			foreach (var user in m_userList)
+			{
+				if (user.user_ID == sender_id)
+				{
+					int serviceID = (int)ProtoBuff.Packet.Type.Login_Ack;
+					var newPacket = user.OnBuildPacket(msg, serviceID, sender_id);
+					user.Send(newPacket);
+
+					break;
+				}
+			}
+
+
 		}
 
 	}

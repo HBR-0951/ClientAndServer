@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProtoBuff.Packet
 {
-    public abstract class Packet_Template {
+    public class Packet_Template {
 
         // Customer Var >> 自定義封包内容
         // 如果需要更多的參數 或 自定義内容，可繼承此類進行拓展，
@@ -30,27 +30,29 @@ namespace ProtoBuff.Packet
         public int Code { get; set; }
 
         /// <summary>
+        /// 封包要做的動作: 1: 傳送userID給client
+        ///              2: server轉發,
+        ///              3: 給server,
+        ///              4: server 給 client,
+        ///              5: 群發
+        ///              
+        ///              
+        /// </summary>
+        public int Function { get; set; }
+
+        /// <summary>
         /// 封包長度
         /// </summary>
-        public int SizeOfPacket => m_data == null ? 0 : IndexOf_Data + m_data.Length;
+        public int SizeOfPacket => 3 * sizeof(int);
 
-        /// <summary>
-        /// 封包内容
-        /// </summary>
-        protected byte[]? m_data = null;
-
-        /// <summary>
-        /// 封包内容大小
-        /// </summary>
-        protected int m_dataSize;
+        
 
         /// <summary>
         /// 變數在封包中的所引位置
         /// </summary>
         public const int IndexOf_ID = 0;
         public const int IndexOf_Code = IndexOf_ID + sizeof(int); // ID的型別是int，int 大小為 4
-        public const int IndexOf_dataSize = IndexOf_Code + sizeof(int);
-        public const int IndexOf_Data = IndexOf_dataSize + sizeof(int);
+        public const int IndexOf_Function = IndexOf_Code + sizeof(int); // new
 
 
 
@@ -62,18 +64,12 @@ namespace ProtoBuff.Packet
             //指定封包尺寸
             var bytesPacket = new byte[SizeOfPacket];
 
-            
+
             System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(ID)).CopyTo(bytesPacket, IndexOf_ID);
             System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Code)).CopyTo(bytesPacket, IndexOf_Code);
-            
-            
-            
-            if (m_data != null) {
-                m_dataSize = m_data.Length;
-                System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(m_dataSize)).CopyTo(bytesPacket, IndexOf_dataSize);
-                m_data.CopyTo(bytesPacket, IndexOf_Data);
-            }
-           
+
+            System.BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Function)).CopyTo(bytesPacket, IndexOf_Function);
+
             return bytesPacket;
         }
 
@@ -84,9 +80,7 @@ namespace ProtoBuff.Packet
 
             ID = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(Extract(bytesPacket, IndexOf_ID, sizeof(int)), 0));
             Code = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(Extract(bytesPacket, IndexOf_Code, sizeof(int)), 0));
-            m_dataSize = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(Extract(bytesPacket, IndexOf_dataSize, sizeof(int)), 0));
-            m_data = Extract(bytesPacket, IndexOf_Data, m_dataSize);
-
+            Function = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(Extract(bytesPacket, IndexOf_Function, sizeof(int)), 0));
         }
 
         /// <summary>
@@ -99,7 +93,6 @@ namespace ProtoBuff.Packet
                  + "----------------------------------------------\n"
                  + "ID\t" + ID + "\n"
                  + "Code\t" + Code + "\n"
-                 + "m_dataSize\t" + m_dataSize + "\n"
                  //+ "Data\t" + Data + "\n" // 需反序列化成爲自己所需的形態
                  + "End-------------------------------------------\n\n";
         }

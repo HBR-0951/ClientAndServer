@@ -8,20 +8,19 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            //Server server = new Server("server1"); // 建立一個Server
+            Server server = new Server("server1"); // 建立一個Server
 
-            //server.ListenTo("127.0.0.1", 8000); // 監聽目標位址
+            server.ListenTo("127.0.0.1", 8000); // 監聽目標位址
 
-            //server.OnStart(); // 啟動服務器(啟動監聽)
+            server.OnStart(); // 啟動服務器(啟動監聽)
 
-            //Console.ReadKey();
-            //server.OnClose();
-
-            TestDB db = new TestDB();
-            db.Run();
+            Console.ReadKey();
+            server.OnClose();
 
 
 
-}
+
+
+        }
     }
 }

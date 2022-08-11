@@ -36,6 +36,11 @@ namespace Client
 		public static Queue<byte[]> MQ_Queue = new Queue<byte[]>();
 		protected Thread _queueEvent;
 
+		// Login
+		protected string Login_UserID = "1";
+		protected string Login_Password = "1234";
+		protected bool isLogin = false;
+
 		public string Name { get; set; } = "N/A";
 
 		public bool IsConnected
@@ -96,7 +101,8 @@ namespace Client
 		{
 			while (IsConnected)
 			{
-				try
+
+                try
 				{
 					string? s = Console.ReadLine();
 
@@ -106,7 +112,7 @@ namespace Client
                     {
                         Console.WriteLine("send msg");
 						int serviceID = (int)ProtoBuff.Packet.Type.Forward;
-                        byte[] bytesPacket = OnBuildPacket(s, serviceID, 1);
+                        byte[] bytesPacket = OnBuildMsgPacket(s, serviceID, 1);
                         Send(bytesPacket);
                     }
 
@@ -162,8 +168,9 @@ namespace Client
 				m_tcpSocket.Connect(IPEndPoint);
 				Console.WriteLine("Connect");
 				_awaitServer.Start();
-				_sendPacket.Start();
+				//_sendPacket.Start();
 				_queueEvent.Start();
+				
 				
 			}
 			catch (SocketException e)
@@ -192,9 +199,9 @@ namespace Client
 		///           3: 給server,
 		///           4: server 給 client       
 		/// </summary>
-		public byte[] OnBuildPacket(string msg, int function, int target_id)
+		public byte[] OnBuildMsgPacket(string msg, int function, int target_id)
 		{
-			var packet = new SamplePacket();
+			var packet = new MsgPacket();
 			packet.ID = 12;
 			packet.Code = 123;
 			packet.TargetID = target_id;
@@ -209,6 +216,24 @@ namespace Client
 
 			return bytesPacket;
 		}
+		public byte[] OnBuildLoginPacket(string id, string password, int function)
+        {
+			var packet = new LoginPacket();
+			packet.ID = 1;
+			packet.Code = 123;
+			packet.Function = function;
+			packet.TargetID = -1;
+			packet.SenderID = this.user_id;
+			packet.LoginID = id;
+			packet.LoginPsd = password;
+
+			byte[] bytesPacket = packet.ToPacketup();
+
+			return bytesPacket;
+
+        }
+
+
 
 		// new 解封包 
 		public byte[]? OnUnPack()
@@ -271,7 +296,7 @@ namespace Client
 						}
 						else
 						{
-							byte[] tempLength = SamplePacket.Extract(dataBuffer, IndexOfBuffer, 4);
+							byte[] tempLength = MsgPacket.Extract(dataBuffer, IndexOfBuffer, 4);
 							IndexOfBuffer += 4;
 							dataBufferLength -= 4;
 							packetLength = IPAddress.NetworkToHostOrder(System.BitConverter.ToInt32(tempLength, 0));
@@ -292,7 +317,7 @@ namespace Client
 						if (dataBufferLength >= packetLength)
 						{
 
-							fullPacket = SamplePacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
+							fullPacket = MsgPacket.Extract(dataBuffer, IndexOfBuffer, packetLength);
 							IndexOfBuffer += packetLength;
 							dataBufferLength -= packetLength;
 
@@ -333,7 +358,7 @@ namespace Client
 				if (MQ_Queue.Count != 0)
 				{
 					byte[] bytesPacket = MQ_Queue.Dequeue();
-					SamplePacket packet = new SamplePacket();
+					MsgPacket packet = new MsgPacket();
 					packet.UnPack(bytesPacket);
 
 					
@@ -346,46 +371,7 @@ namespace Client
 			}
 		}
 
-		//protected void PacketEvent(SamplePacket packet)
-		//      {
-		//	var target_id = packet.TargetID;
-		//	int sender_id = packet.SenderID;
-		//	string msg = packet.Message;
-		//	int function = packet.Function;
-		//	var packetLength = packet.SizeOfPacket;
 
-		//	//Console.WriteLine(receivePacket.ToString());
-		//	//        Console.WriteLine("\ntargetid: " + targetid
-		//	//                        + "\nsenderid: " + sendid
-		//	//                        + "\nfunction: " + function
-		//	//+ "\npacketLength: " + packetLength
-		//	//+ "\nmsg: " + msg);
-		//	switch (function)
-		//	{
-		//		case 1: // 得到user_id
-		//			this.user_id = Int32.Parse(msg);
-		//			Console.WriteLine("Client get userid: " + this.user_id);
-		//			hasGetUserID = true;
-		//			break;
-		//		case 2: // server 轉發
-		//			Console.WriteLine("target_id: " + target_id);
-		//			Console.WriteLine("user_id: " + this.user_id);
-		//			if (target_id == this.user_id)
-		//			{
-		//				Console.WriteLine("Client get msg: " + msg);
-		//			}
-		//			else
-		//			{
-		//				Console.WriteLine("The msg is sent to wrong place");
-		//			}
-		//			break;
-		//		case 4: // server 傳給 client
-		//			Console.WriteLine("Server send msg: " + msg);
-		//			break;
-		//		default:
-		//			break;
-		//	}
-		//}
 
 
 	}
