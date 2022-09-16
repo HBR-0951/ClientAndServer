@@ -1,21 +1,24 @@
 ﻿<Properties StartupConfiguration="{070D251D-6C3C-401D-9C34-8BE8FA9A21A2}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Client/Client.cs">
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Client/Service.cs">
     <Files>
       <File FileName="Client/Program.cs" Line="8" Column="27" />
-      <File FileName="Client/Client.cs" Line="354" Column="1" />
+      <File FileName="Client/Client.cs" Line="40" Column="37" />
       <File FileName="../ProtocBuff/Packet/Program.cs" Line="14" Column="13" />
-      <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="59" Column="24" />
+      <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="51" Column="24" />
       <File FileName="Client/CommonDispatcher.cs" Line="40" Column="21" />
-      <File FileName="Client/Service.cs" Line="72" Column="44" />
+      <File FileName="Client/Service.cs" Line="110" Column="11" />
       <File FileName="../ProtocBuff/Packet/MsgPacket.cs" Line="30" Column="27" />
+      <File FileName="../ProtocBuff/Packet/LoginPacket.cs" Line="106" Column="14" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Client" expanded="True">
-            <Node name="Client" expanded="True">
-              <Node name="Client.cs" selected="True" />
-            </Node>
+            <Node name="Client" expanded="True" />
             <Node name="Packet" expanded="True" />
           </Node>
         </State>
@@ -25,11 +28,7 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.ItemProperties.Client PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Client PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MultiItemStartupConfigurations />
 </Properties>
