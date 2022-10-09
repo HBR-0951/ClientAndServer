@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Server/1.0.0": {
         "dependencies": {
+          "MyDatabase": "1.0.0",
           "MySql.Data": "8.0.30",
           "Packet": "1.0.0"
         },
@@ -210,6 +211,14 @@
           }
         }
       },
+      "MyDatabase/1.0.0": {
+        "dependencies": {
+          "MySql.Data": "8.0.30"
+        },
+        "runtime": {
+          "MyDatabase.dll": {}
+        }
+      },
       "Packet/1.0.0": {
         "runtime": {
           "Packet.dll": {}
@@ -355,6 +364,11 @@
       "sha512": "sha512-CeWTdRNfRaSh0pm2gDTJFwVaXfTq6Xwv/sA887iwPTneW7oMtMlpvDIO+U60+3GWTB7Aom6oQwv5VZVUhQRdPQ==",
       "path": "system.windows.extensions/4.7.0",
       "hashPath": "system.windows.extensions.4.7.0.nupkg.sha512"
+    },
+    "MyDatabase/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Packet/1.0.0": {
       "type": "project",

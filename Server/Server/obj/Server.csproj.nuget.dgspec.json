@@ -4,6 +4,124 @@
     "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/Server.csproj": {}
   },
   "projects": {
+    "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MgDatabase/MgDatabase/MgDatabase.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MgDatabase/MgDatabase/MgDatabase.csproj",
+        "projectName": "MgDatabase",
+        "projectPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MgDatabase/MgDatabase/MgDatabase.csproj",
+        "packagesPath": "/Users/huangbairu/.nuget/packages/",
+        "outputPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MgDatabase/MgDatabase/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/huangbairu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.17.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.300/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MyDatabase/MyDatabase/MyDatabase.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MyDatabase/MyDatabase/MyDatabase.csproj",
+        "projectName": "MyDatabase",
+        "projectPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MyDatabase/MyDatabase/MyDatabase.csproj",
+        "packagesPath": "/Users/huangbairu/.nuget/packages/",
+        "outputPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MyDatabase/MyDatabase/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/huangbairu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.30, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.300/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ProtocBuff/Packet/Packet.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -80,6 +198,12 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
+              "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MgDatabase/MgDatabase/MgDatabase.csproj": {
+                "projectPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MgDatabase/MgDatabase/MgDatabase.csproj"
+              },
+              "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MyDatabase/MyDatabase/MyDatabase.csproj": {
+                "projectPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/MyDatabase/MyDatabase/MyDatabase.csproj"
+              },
               "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ProtocBuff/Packet/Packet.csproj": {
                 "projectPath": "/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/ProtocBuff/Packet/Packet.csproj"
               }

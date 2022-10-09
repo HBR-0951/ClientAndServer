@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ProtocBuff\Packet\Packet.csproj" />
-    <ProjectReference Include="..\..\MyDatabase\MyDatabase\MyDatabase.csproj" />
-    <ProjectReference Include="..\..\MgDatabase\MgDatabase\MgDatabase.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="MySql.Data" />
   </ItemGroup>
   <ItemGroup>

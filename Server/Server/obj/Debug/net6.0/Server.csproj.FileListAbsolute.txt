@@ -53,3 +53,8 @@
 /Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll
 /Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll
 /Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/runtimes/win/lib/netcoreapp3.0/System.Windows.Extensions.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/MyDatabase.deps.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/MyDatabase.runtimeconfig.json
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/MyDatabase
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/MyDatabase.dll
+/Users/huangbairu/Desktop/code/Github/C#/ClientAndServer/Server/Server/bin/Debug/net6.0/MyDatabase.pdb

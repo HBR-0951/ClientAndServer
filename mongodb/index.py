@@ -1,8 +1,8 @@
-from pymongo import MongoClient
 import pymongo
+from pymongo import MongoClient
 
 # Connect
-conn = "mongodb+srv://HBR-0951:a4612942440@base-mgdb.m3tgcsm.mongodb.net/?retryWrites=true&w=majority"
+conn = "mongodb+srv://HBR-0951:<password>@cluster0.4n5gfld.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(conn)
 
 db = client.get_database('student_db')
@@ -34,9 +34,9 @@ records = db.student_records
 
 
 # print data
-# cursor = records.find({})
-# data = [d for d in cursor]
-# print(data)
+cursor = records.find({})
+data = [d for d in cursor]
+print(data)
 
 # # count document
 # count = records.count_documents({})

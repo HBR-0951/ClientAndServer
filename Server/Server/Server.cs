@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using ProtoBuff.Packet;
+using MyDatabase;
 
 
 namespace Server
@@ -31,7 +32,7 @@ namespace Server
         protected Thread _queueEvent;
 
         // MySqlDB
-        protected TestDB mySqlDB = new TestDB();
+        protected MyDatabase.Service mySqlDB = new ();
 
 
 
@@ -107,6 +108,8 @@ namespace Server
             _checkUserisOffLine.Start(); // 檢查client 有無斷線
             _queueEvent.Start();
             mySqlDB.OnStart();
+            
+        
 
             //// 訂閱MQ
             //mq = new MQ(this.Name);
@@ -176,10 +179,10 @@ namespace Server
                     Packet_Template packet = new Packet_Template();
                     packet.UnPack(bytesPacket);
 
-                    
+
 
                     string service = ((ProtoBuff.Packet.Type)packet.Function).ToString();
-              
+
 
                     m_cmdDispatcher.Dispatch(service, bytesPacket);
                 }

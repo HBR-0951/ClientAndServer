@@ -108,7 +108,7 @@ namespace Server {
 			string password = receivePacket.LoginPsd;
 			int sender_id = receivePacket.SenderID;
 
-			Console.WriteLine(receivePacket.ToString());
+			//Console.WriteLine(receivePacket.ToString());
 			
 			// 判斷登入是否成功，決定傳送的訊息
 			string msg = mySqlDB.UserLogin(id, password) ? "Success" : "Fail to Login";

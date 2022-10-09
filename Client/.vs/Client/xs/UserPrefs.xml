@@ -1,16 +1,13 @@
 ﻿<Properties StartupConfiguration="{070D251D-6C3C-401D-9C34-8BE8FA9A21A2}|Default">
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Client/Service.cs">
+  <MonoDevelop.Ide.ItemProperties.Client PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Client/Client.cs">
     <Files>
       <File FileName="Client/Program.cs" Line="8" Column="27" />
       <File FileName="Client/Client.cs" Line="40" Column="37" />
       <File FileName="../ProtocBuff/Packet/Program.cs" Line="14" Column="13" />
       <File FileName="../ProtocBuff/Packet/Packet_Template.cs" Line="51" Column="24" />
       <File FileName="Client/CommonDispatcher.cs" Line="40" Column="21" />
-      <File FileName="Client/Service.cs" Line="110" Column="11" />
+      <File FileName="Client/Service.cs" Line="45" Column="38" />
       <File FileName="../ProtocBuff/Packet/MsgPacket.cs" Line="30" Column="27" />
       <File FileName="../ProtocBuff/Packet/LoginPacket.cs" Line="106" Column="14" />
     </Files>
@@ -29,6 +26,9 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Client PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
 </Properties>

@@ -37,7 +37,7 @@ namespace Client
 		protected Thread _queueEvent;
 
 		// Login
-		protected string Login_UserID = "1";
+		protected string Login_UserID = "0";
 		protected string Login_Password = "1234";
 		protected bool isLogin = false;
 
@@ -219,7 +219,7 @@ namespace Client
 		public byte[] OnBuildLoginPacket(string id, string password, int function)
         {
 			var packet = new LoginPacket();
-			packet.ID = 1;
+			packet.ID = 0;
 			packet.Code = 123;
 			packet.Function = function;
 			packet.TargetID = -1;
